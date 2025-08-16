@@ -1,6 +1,10 @@
 <div class="card experience">
   @for (j of jobs; track $index) {
-    <div class="job">
+    <div
+      class="job"
+      [class.expanded]="j.expanded"
+      (click)="toggleExpand(j)"
+    >
       <div class="logo"><img [src]="j.logo" alt="logo"></div>
       <div class="meta">
         <div class="role">{{ j.role }}</div>
@@ -9,7 +13,16 @@
       <div class="date small">
         {{ j.from }}{{ j.to ? (' - ' + j.to) : '' }}
       </div>
+
+      <!-- Contenido expandido -->
+      @if (j.expanded) {
+        <div class="details">
+          <div class="cycle"><strong>Ciclo:</strong> {{ j.cycle }}</div>
+          <div class="course"><strong>Curso:</strong> {{ j.course }}</div>
+          <div class="description">{{ j.description }}</div>
+        </div>
+      }
+
     </div>
   }
 </div>
-
