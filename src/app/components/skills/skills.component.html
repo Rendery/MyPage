@@ -1,13 +1,17 @@
 <div class="card skills">
   <h3>Skills</h3>
+
+  <h4>Técnicas</h4>
   <div class="chips">
-    @for (s of design; track $index){
+    @for (s of technical; track $index){
       <div class="chip">{{s}}</div>
     }
   </div>
+
+  <h4>Blandas</h4>
   <div class="chips" style="margin-top:12px">
-    @for (s of dev; track $index){
-      <div class="chip outline">{{s}}</div>
+    @for (s of soft; track $index){
+      <div class="chip soft">{{s}}</div>
     }
   </div>
 </div>

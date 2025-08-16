@@ -1,4 +1,30 @@
-.skills h3 { margin:0 0 8px 0 }
-.chips { display:flex; gap:8px; flex-wrap:wrap }
-.chip { padding:8px 12px; background: rgba(107,76,255,0.12); border-radius:8px; font-size:13px }
-.chip.outline { background: rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.02) }
+.skills h3 {
+  margin: 0 0 8px 0;
+}
+
+.skills h4 {
+  margin: 12px 0 6px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 8px 12px;
+  background: rgba(107, 76, 255, 0.12);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.chip.soft {
+  background: rgba(76, 201, 91, 0.15);
+  border: 1px solid rgba(76, 201, 91, 0.25);
+  color: #4cc95b;
+}

@@ -18,7 +18,6 @@ import { ToolsComponent } from './components/tools/tools.component';
     ExperienceComponent,
     SkillsComponent,
     EducationComponent,
-    ProjectsComponent,
     ToolsComponent
   ],
   templateUrl: './app.component.html',
