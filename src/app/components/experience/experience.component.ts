@@ -22,57 +22,79 @@ export class ExperienceComponent {
   jobs: Job[] = [
     {
       company: 'UPC',
-      role: 'Hackathon Winner – Smart City App',
-      logo: '/images/upc.png',
-      from: 'Mar 2023',
-      to: 'Jul 2023',
-      cycle: '5to ciclo',
-      course: 'Ingeniería de Software I',
-      description: 'Lideré un equipo en un hackathon universitario desarrollando una aplicación IoT para gestión inteligente de residuos urbanos. Ganamos el 1er puesto entre 50 equipos.',
-      expanded: false
-    },
-    {
-      company: 'UPC',
-      role: 'Research Assistant – AI & Data Mining',
-      logo: '/images/upc.png',
-      from: 'Aug 2023',
-      to: 'Dec 2023',
-      cycle: '6to ciclo',
-      course: 'Minería de Datos',
-      description: 'Participé en un proyecto de investigación aplicando modelos de Machine Learning para predecir deserción estudiantil. Publicación aceptada en congreso estudiantil de la IEEE.',
-      expanded: false
-    },
-    {
-      company: 'UPC',
-      role: 'Team Leader – E-commerce Project',
-      logo: '/images/upc.png',
-      from: 'Mar 2024',
-      to: 'Jul 2024',
-      cycle: '7mo ciclo',
-      course: 'Arquitectura de Software',
-      description: 'Dirigí el desarrollo de una plataforma de e-commerce con arquitectura basada en microservicios. Implementación de pagos con Stripe y despliegue en AWS.',
-      expanded: false
-    },
-    {
-      company: 'UPC',
-      role: 'Full-stack Developer – Internship',
-      logo: '/images/upc.png',
-      from: 'Aug 2024',
-      to: 'Dec 2024',
-      cycle: '7mo ciclo',
-      course: 'Prácticas Preprofesionales',
-      description: 'Trabajé en una startup desarrollando un sistema de reservas para restaurantes usando Angular y NestJS. Aprendí sobre integración continua y DevOps.',
-      expanded: false
-    },
-    {
-      company: 'UPC',
-      role: 'Capstone Project – Fintech Platform',
+      role: 'Líder de Proyecto – Transformación Digital',
       logo: '/images/upc.png',
       from: 'Mar 2025',
       to: 'Jul 2025',
       cycle: '8vo ciclo',
-      course: 'Proyecto de Fin de Carrera',
-      description: 'Lideré un equipo de 4 personas en el desarrollo de una plataforma fintech para microcréditos con autenticación biométrica. Proyecto destacado por la facultad.',
+      course: 'Gerencia de proyectos en computación',
+      description: 'Como líder de proyecto, gestioné un equipo multidisciplinario para implementar un sistema de gestión académica digital con metodologías ágiles (Scrum). Logramos entregar un MVP funcional en tiempo récord a pesar de cambios de alcance constantes.',
+      expanded: false
+    },
+    {
+      company: 'UPC',
+      role: 'Arquitecto de Software – Plataforma Escalable',
+      logo: '/images/upc.png',
+      from: 'Mar 2025',
+      to: 'Jul 2025',
+      cycle: '8vo ciclo',
+      course: 'Fundamentos de arquitectura de software',
+      description: 'Diseñé la arquitectura de un sistema financiero simulado utilizando microservicios y contenedores Docker. Lideré la toma de decisiones sobre patrones de diseño y logré que el sistema soportara pruebas de alta concurrencia sin caídas.',
+      expanded: false
+    },
+    {
+      company: 'UPC',
+      role: 'Investigador – Ingeniería de Software Empírica',
+      logo: '/images/upc.png',
+      from: 'Aug 2024',
+      to: 'Dec 2024',
+      cycle: '8vo ciclo',
+      course: 'Diseño de experimentos de ingeniería de software',
+      description: 'Conduje un experimento controlado para evaluar la productividad de equipos utilizando pair programming vs. trabajo individual. Presenté los resultados en un congreso estudiantil y fui reconocido por el rigor metodológico.',
+      expanded: false
+    },
+    {
+      company: 'UPC',
+      role: 'Líder Financiero – Proyecto de Evaluación Económica',
+      logo: '/images/upc.png',
+      from: 'Mar 2024',
+      to: 'Jul 2024',
+      cycle: '7mo ciclo',
+      course: 'Finanzas e ingeniería económica',
+      description: 'Encabecé el análisis financiero de un sistema de transporte inteligente. Modelé proyecciones de ROI y análisis de riesgo con escenarios inflacionarios, mostrando viabilidad de inversión a largo plazo.',
+      expanded: false
+    },
+    {
+      company: 'UPC',
+      role: 'Team Leader – IoT Smart Campus',
+      logo: '/images/upc.png',
+      from: 'Mar 2024',
+      to: 'Jul 2024',
+      cycle: '7mo ciclo',
+      course: 'Desarrollo de soluciones IoT',
+      description: 'Coordiné el desarrollo de una solución IoT para monitoreo ambiental en aulas universitarias (temperatura, CO₂). Implementamos dashboards en tiempo real y optimizamos la comunicación entre dispositivos usando MQTT.',
+      expanded: false
+    },
+    {
+      company: 'UPC',
+      role: 'Full-stack Developer – App de Delivery Universitario',
+      logo: '/images/upc.png',
+      from: 'Mar 2024',
+      to: 'Jul 2024',
+      cycle: '7mo ciclo',
+      course: 'Aplicaciones para dispositivos móviles',
+      description: 'Diseñé y desarrollé una aplicación móvil híbrida (Ionic + Angular) para pedidos dentro del campus. Superamos el reto de la geolocalización en interiores e implementamos notificaciones push en tiempo real.',
+      expanded: false
+    },
+    {
+      company: 'UPC',
+      role: 'Network Engineer – Simulación de Infraestructura',
+      logo: '/images/upc.png',
+      from: 'Aug 2023',
+      to: 'Dec 2023',
+      cycle: '6to ciclo',
+      course: 'Redes y comunicaciones de datos',
+      description: 'Lideré la configuración de una red simulada con protocolos de enrutamiento dinámico (OSPF y BGP). Logré que el diseño soportara tolerancia a fallos y demostré un 99.9% de disponibilidad en pruebas de estrés.',
       expanded: false
     }
   ];
