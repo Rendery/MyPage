@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import "flag-icons/css/flag-icons.min.css";
 
 @Component({
   selector: 'app-sidebar',
