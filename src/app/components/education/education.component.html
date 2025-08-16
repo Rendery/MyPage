@@ -1,19 +1,12 @@
 <div class="card education">
-  <h3>Education</h3>
-  <div class="edu-grid">
-    <div class="edu-item">
-      <div class="title">Build a design system</div>
-      <div class="small">Oct 2021 — Memorisely</div>
-    </div>
-
-    <div class="edu-item">
-      <div class="title">UX Design certificate</div>
-      <div class="small">Feb 2020 — UX Academy</div>
-    </div>
-
-    <div class="edu-item">
-      <div class="title">User research course</div>
-      <div class="small">Dec 2019 — Coursera</div>
-    </div>
+  <h3>Extracurricular Courses</h3>
+  <div class="edu-list">
+    @for (c of courses; track $index) {
+      <div class="edu-item">
+        <div class="title">{{ c.title }}</div>
+        <div class="small">{{ c.date }} — {{ c.institution }}</div>
+        <div class="credential">Credencial: {{ c.credential }}</div>
+      </div>
+    }
   </div>
 </div>

@@ -1,55 +1,48 @@
-.experience {
+.education {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 8px;
+  scroll-behavior: smooth;
+
+  /* Scrollbar */
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
+    box-shadow: inset 2px 2px 5px 0 rgba(255, 255, 255, 0.5);
+    border-radius: 100px;
+  }
 }
 
-.job {
+.edu-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 3px;
   padding: 14px;
   background: var(--glass);
   border-radius: 8px;
-  cursor: pointer;
   transition: all 0.3s ease;
-  transform: scale(1);
 
   &:hover {
-    transform: scale(1.02);
+    transform: scale(1.01);
   }
-
-  &.expanded {
-    background: rgba(255, 255, 255, 0.08);
+  .title {
+    font-weight: 600;
   }
-}
-
-.logo img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-.meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.role {
-  font-weight: 600;
-}
-
-.company {
-  color: var(--muted);
-}
-
-.date {
-  margin-left: auto;
-}
-
-.details {
-  margin-top: 8px;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  color: var(--text);
+  .small {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .credential {
+    font-size: 0.8rem;
+    color: var(--text);
+    opacity: 0.8;
+  }
 }
