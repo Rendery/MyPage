@@ -1,0 +1,4 @@
+.skills h3 { margin:0 0 8px 0 }
+.chips { display:flex; gap:8px; flex-wrap:wrap }
+.chip { padding:8px 12px; background: rgba(107,76,255,0.12); border-radius:8px; font-size:13px }
+.chip.outline { background: rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.02) }

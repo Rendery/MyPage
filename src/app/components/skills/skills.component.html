@@ -1,0 +1,13 @@
+<div class="card skills">
+  <h3>Skills</h3>
+  <div class="chips">
+    @for (s of design; track $index){
+      <div class="chip">{{s}}</div>
+    }
+  </div>
+  <div class="chips" style="margin-top:12px">
+    @for (s of dev; track $index){
+      <div class="chip outline">{{s}}</div>
+    }
+  </div>
+</div>

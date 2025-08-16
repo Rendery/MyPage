@@ -1,0 +1,15 @@
+<div class="card experience">
+  @for (j of jobs; track $index) {
+    <div class="job">
+      <div class="logo"><img [src]="j.logo" alt="logo"></div>
+      <div class="meta">
+        <div class="role">{{ j.role }}</div>
+        <div class="company">{{ j.company }}</div>
+      </div>
+      <div class="date small">
+        {{ j.from }}{{ j.to ? (' - ' + j.to) : '' }}
+      </div>
+    </div>
+  }
+</div>
+
