@@ -1,17 +1,29 @@
-<div class="card skills">
-  <h3>Skills</h3>
-
-  <h4>Técnicas</h4>
-  <div class="chips">
-    @for (s of technical; track $index){
-      <div class="chip">{{s}}</div>
-    }
+<div class="glass-card skills-container">
+  <div class="header">
+    <h2 class="font-title">Skills & Expertise</h2>
+    <div class="icon-bg">⚡</div>
   </div>
 
-  <h4>Blandas</h4>
-  <div class="chips" style="margin-top:12px">
-    @for (s of soft; track $index){
-      <div class="chip soft">{{s}}</div>
-    }
+  <div class="skill-section">
+    <h4 class="text-muted">Technical Arsenal</h4>
+    <div class="chips">
+      @for (s of technical; track $index) {
+        <div class="chip tech-chip">
+          <span class="dot"></span>
+          {{s}}
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="skill-section soft-section">
+    <h4 class="text-muted">Soft Skills</h4>
+    <div class="chips">
+      @for (s of soft; track $index) {
+        <div class="chip soft-chip">
+          {{s}}
+        </div>
+      }
+    </div>
   </div>
 </div>

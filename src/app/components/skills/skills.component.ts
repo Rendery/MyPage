@@ -12,7 +12,7 @@ export class SkillsComponent {
     'Node.js', 'Express.js', 'React', 'Next.js',
     'SQL', 'Firebase',
     'Git & GitHub', 'REST APIs', 'IoT Development',
-    'Cloud Basics (AWS, GCP)', 'Scrum & Agile'
+    'Cloud (AWS, GCP)', 'Scrum & Agile'
   ];
 
   soft = [

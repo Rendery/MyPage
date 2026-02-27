@@ -1,20 +1,42 @@
-<div class="container">
-  <aside style="width:320px">
-    <app-sidebar></app-sidebar>
-  </aside>
+<div class="app-wrapper" [class]="currentTheme" [style.--mouse-x]="mouseX + 'px'" [style.--mouse-y]="mouseY + 'px'">
+  
+  <!-- Fondos Animados y Efectos Ambientales -->
+  <div class="ambient-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="mouse-glow"></div>
+  </div>
 
-  <main style="flex:1">
-    <app-header-profile></app-header-profile>
+  <!-- Selector de Temas Flotante -->
+  <div class="theme-switcher glass-panel">
+    <button [class.active]="currentTheme === 'light'" (click)="setTheme('light')" title="Light Mode">☀️</button>
+    <button [class.active]="currentTheme === 'dark'" (click)="setTheme('dark')" title="Dark Mode">🌙</button>
+    <button [class.active]="currentTheme === 'rainbow'" (click)="setTheme('rainbow')" title="Crazy Mode">🌈</button>
+  </div>
 
-    <section style="margin-top: 24px">
-      <app-experience></app-experience>
-    </section>
+  <div class="container">
+    <aside class="sidebar-wrapper">
+      <app-sidebar></app-sidebar>
+    </aside>
 
-    <section style="margin-top: 24px; display:flex; gap:24px; flex-wrap:wrap">
-      <app-skills></app-skills>
-      <app-education></app-education>
-      <!-- <app-projects></app-projects> -->
-      <app-tools></app-tools>
-    </section>
-  </main>
+    <main class="content-wrapper">
+      <app-header-profile></app-header-profile>
+
+      <section class="section-mt">
+        <app-experience></app-experience>
+      </section>
+
+      <section class="grid-layout section-mt">
+        <div class="column">
+          <app-skills></app-skills>
+          <app-tools></app-tools>
+        </div>
+        <div class="column">
+          <app-education></app-education>
+          <app-projects></app-projects>
+        </div>
+      </section>
+    </main>
+  </div>
 </div>

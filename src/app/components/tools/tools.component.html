@@ -1,9 +1,12 @@
-<div class="card tools">
-  <h3>Tools</h3>
+<div class="glass-card tools-container">
+  <h2 class="font-title header-title">Preferred Tools</h2>
+  
   <div class="tool-grid">
     @for (t of tools; track $index) {
-      <div class="tool">{{ t }}</div>
+      <div class="tool-item">
+        <span class="t-icon">{{ t.icon }}</span>
+        <span class="t-name">{{ t.name }}</span>
+      </div>
     }
   </div>
 </div>
-

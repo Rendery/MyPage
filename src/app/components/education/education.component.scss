@@ -1,48 +1,110 @@
-.education {
+.education-container {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  max-height: 270px;
-  overflow-y: auto;
-  padding-right: 8px;
-  scroll-behavior: smooth;
+  height: 400px; /* Altura fija para hacer scroll interno */
+  padding: 24px;
+}
 
-  /* Scrollbar */
-  &::-webkit-scrollbar {
-    width: 10px;
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--glass-border);
+
+  h2 {
+    font-size: 20px;
   }
-  &::-webkit-scrollbar-track {
-    background: transparent;
+
+  .count-badge {
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
   }
-  &::-webkit-scrollbar-thumb {
-    background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
-    box-shadow: inset 2px 2px 5px 0 rgba(255, 255, 255, 0.5);
-    border-radius: 100px;
-  }
+}
+
+.edu-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .edu-item {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 14px;
-  background: var(--glass);
-  border-radius: 8px;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255,255,255, 0.05);
+  border-radius: 12px;
   transition: all 0.3s ease;
 
   &:hover {
-    transform: scale(1.01);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--glass-border);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+    .certificate-icon {
+      transform: scale(1.2) rotate(10deg);
+    }
   }
+}
+
+.icon-side {
+  display: flex;
+  align-items: flex-start;
+  padding-top: 4px;
+
+  .certificate-icon {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+  }
+}
+
+.content-side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
   .title {
+    font-size: 15px;
     font-weight: 600;
+    line-height: 1.3;
   }
-  .small {
-    color: var(--muted);
-    font-size: 0.9rem;
+
+  .meta {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    .inst { font-weight: 500; }
+    .dot { opacity: 0.5; }
   }
-  .credential {
-    font-size: 0.8rem;
-    color: var(--text);
+
+  .credential-box {
+    margin-top: 4px;
+    display: inline-block;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
     opacity: 0.8;
+    align-self: flex-start;
+
+    .cred-label {
+      color: var(--accent);
+      font-weight: bold;
+    }
   }
 }

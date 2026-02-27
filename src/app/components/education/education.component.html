@@ -1,11 +1,26 @@
-<div class="card education">
-  <h3>Extracurricular Courses</h3>
+<div class="glass-card education-container">
+  <div class="header">
+    <h2 class="font-title">Certifications & Courses</h2>
+    <span class="count-badge">{{ courses.length }}</span>
+  </div>
+
   <div class="edu-list">
     @for (c of courses; track $index) {
       <div class="edu-item">
-        <div class="title">{{ c.title }}</div>
-        <div class="small">{{ c.date }} — {{ c.institution }}</div>
-        <div class="credential">Credencial: {{ c.credential }}</div>
+        <div class="icon-side">
+          <div class="certificate-icon">🎓</div>
+        </div>
+        <div class="content-side">
+          <h4 class="title">{{ c.title }}</h4>
+          <div class="meta text-muted">
+            <span class="inst">{{ c.institution }}</span>
+            <span class="dot">•</span>
+            <span class="date">{{ c.date }}</span>
+          </div>
+          <div class="credential-box">
+            <span class="cred-label">ID:</span> {{ c.credential }}
+          </div>
+        </div>
       </div>
     }
   </div>

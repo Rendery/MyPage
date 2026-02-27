@@ -1,27 +1,42 @@
-<div class="card experience">
-  @for (j of jobs; track $index) {
-    <div
-      class="job"
-      [class.expanded]="j.expanded"
-      (click)="toggleExpand(j)"
-    >
-      <div class="logo"><img [src]="j.logo" alt="logo"></div>
-      <div class="meta">
-        <div class="role">{{ j.role }}</div>
-        <div class="company">{{ j.company }}</div>
-      </div>
-      <div class="date small">
-        {{ j.from }}{{ j.to ? (' - ' + j.to) : '' }}
-      </div>
-
-      <!-- Contenido expandido -->
-      @if (j.expanded) {
-        <div class="details">
-          <div class="cycle"><strong>Ciclo:</strong> {{ j.cycle }}</div>
-          <div class="course"><strong>Curso:</strong> {{ j.course }}</div>
-          <div class="description">{{ j.description }}</div>
+<div class="glass-card experience-container">
+  <div class="timeline">
+    @for (j of jobs; track $index) {
+      <div class="timeline-item" [class.expanded]="j.expanded">
+        
+        <!-- Línea conectora del timeline -->
+        <div class="timeline-line">
+          <div class="timeline-dot"></div>
         </div>
-      }
-    </div>
-  }
+
+        <div class="job-card" (click)="toggleExpand(j)">
+          <div class="job-header">
+            <div class="logo-box">
+              <img [src]="j.logo" alt="logo" onerror="this.src='https://ui-avatars.com/api/?name=UPC&background=random'">
+            </div>
+            
+            <div class="job-meta">
+              <h3 class="role">{{ j.role }}</h3>
+              <div class="company text-muted">{{ j.company }}</div>
+            </div>
+
+            <div class="job-actions">
+              <div class="date badge">{{ j.from }}{{ j.to ? (' - ' + j.to) : ' - Present' }}</div>
+              <div class="expand-icon" [class.rotated]="j.expanded">▼</div>
+            </div>
+          </div>
+
+          <!-- Contenido expandido con animación -->
+          <div class="job-details-wrapper" [style.max-height]="j.expanded ? '500px' : '0'">
+            <div class="job-details">
+              <div class="info-tags">
+                <span class="tag cycle-tag"><span class="icon">🔄</span> {{ j.cycle }}</span>
+                <span class="tag course-tag"><span class="icon">📚</span> {{ j.course }}</span>
+              </div>
+              <p class="description">{{ j.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>

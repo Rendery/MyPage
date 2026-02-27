@@ -29,7 +29,7 @@ export class ExperienceComponent {
       cycle: '8vo ciclo',
       course: 'Gerencia de proyectos en computación',
       description: 'Como líder de proyecto, gestioné un equipo multidisciplinario para implementar un sistema de gestión académica digital con metodologías ágiles (Scrum). Logramos entregar un MVP funcional en tiempo récord a pesar de cambios de alcance constantes.',
-      expanded: false
+      expanded: true // El primero abierto por defecto
     },
     {
       company: 'UPC',
