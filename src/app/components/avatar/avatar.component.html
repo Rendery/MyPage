@@ -1,0 +1,199 @@
+<div class="av-stage">
+  <div class="av-shadow" aria-hidden="true"></div>
+
+  <img
+    class="av-img"
+    [class.ready]="state() === 'ok'"
+    [src]="src()"
+    [alt]="alt()"
+    (load)="state.set('ok')"
+    (error)="onError()"
+    draggable="false"
+    decoding="async"
+  />
+
+  @if (state() === 'missing') {
+    <svg class="av-svg" viewBox="-30 0 380 640" preserveAspectRatio="xMidYMax meet" role="img" [attr.aria-label]="alt()">
+      <defs>
+        <pattern [attr.id]="pid" width="7" height="7" patternUnits="userSpaceOnUse">
+          <rect width="7" height="7" fill="#F3F5F8" />
+          <path d="M0 .5H7M.5 0V7" stroke="#8E98AC" stroke-width=".8" />
+        </pattern>
+        <linearGradient [attr.id]="pid + '-hood'" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#2E3E6B" />
+          <stop offset=".55" stop-color="#1F2B4D" />
+          <stop offset="1" stop-color="#151D35" />
+        </linearGradient>
+        <linearGradient [attr.id]="pid + '-jean'" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#33446D" />
+          <stop offset=".6" stop-color="#243150" />
+          <stop offset="1" stop-color="#19223A" />
+        </linearGradient>
+        <radialGradient [attr.id]="pid + '-face'" cx=".42" cy=".36" r=".78">
+          <stop offset="0" stop-color="#F7CEAC" />
+          <stop offset=".55" stop-color="#EAB590" />
+          <stop offset="1" stop-color="#D49871" />
+        </radialGradient>
+        <linearGradient [attr.id]="pid + '-hair'" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#363945" />
+          <stop offset=".55" stop-color="#17181D" />
+        </linearGradient>
+        <radialGradient [attr.id]="pid + '-glow'">
+          <stop offset="0" stop-color="#4DE1F0" stop-opacity=".7" />
+          <stop offset="1" stop-color="#4DE1F0" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+
+      <!-- Piernas y zapatillas -->
+      <g class="av-legs">
+        <path d="M106 372 H157 L153 572 H113 Z" [attr.fill]="f('jean')" />
+        <path d="M163 372 H214 L207 572 H167 Z" [attr.fill]="f('jean')" />
+        <path d="M150 380 L153 572 H146 L144 384 Z" fill="#121929" opacity=".5" />
+        <path d="M170 380 L167 572 H174 L176 384 Z" fill="#121929" opacity=".5" />
+        <path d="M118 470 q16 -6 30 0 M172 470 q16 -6 30 0" stroke="#41558A" stroke-width="2" fill="none" opacity=".6" />
+        <rect x="94" y="558" width="66" height="36" rx="17" fill="#F7F7F4" />
+        <rect x="160" y="558" width="66" height="36" rx="17" fill="#ECECE8" />
+        <rect x="92" y="585" width="70" height="12" rx="6" fill="#C8F031" />
+        <rect x="158" y="585" width="70" height="12" rx="6" fill="#B5DB24" />
+        <path d="M106 574 q16 -9 34 -2 M174 574 q16 -9 34 -2" stroke="#C8F031" stroke-width="3.5" fill="none" stroke-linecap="round" />
+        <path d="M128 563 h18 M128 569 h18 M180 563 h18 M180 569 h18" stroke="#B9BEC8" stroke-width="2" stroke-linecap="round" />
+      </g>
+
+      <!-- Torso, brazos y cabeza (respiran juntos) -->
+      <g class="av-upper">
+        <path d="M112 214 Q114 186 160 184 Q206 186 208 214 Q160 230 112 214 Z" fill="#131A30" />
+        <path d="M146 166 h28 v30 q-14 10 -28 0 z" fill="#D29770" />
+
+        <path d="M98 222 Q104 204 128 200 L192 200 Q216 204 222 222 L230 382 Q160 396 90 382 Z" [attr.fill]="f('hood')" />
+        <path [attr.fill]="'url(#' + pid + ')'" d="M138 200 H182 L178 390 Q160 393 142 390 Z" />
+        <path d="M160 214 V388" stroke="#C9D0DC" stroke-width="1.5" />
+        <g fill="#AEB6C6">
+          <circle cx="160" cy="244" r="2" /><circle cx="160" cy="284" r="2" /><circle cx="160" cy="324" r="2" /><circle cx="160" cy="364" r="2" />
+        </g>
+        <path d="M128 200 L140 200 L146 390 L130 388 Q125 300 128 200 Z" fill="#2C3C68" />
+        <path d="M192 200 L180 200 L174 390 L190 388 Q195 300 192 200 Z" fill="#18213C" />
+        <path d="M144 212 Q141 240 143 262 M176 212 Q179 240 177 262" stroke="#E6EAF1" stroke-width="3" stroke-linecap="round" fill="none" />
+        <rect x="140" y="260" width="6" height="9" rx="2" fill="#C8F031" />
+        <rect x="174" y="260" width="6" height="9" rx="2" fill="#C8F031" />
+        <path d="M140 194 L160 214 L148 223 L135 204 Z M180 194 L160 214 L172 223 L185 204 Z" [attr.fill]="'url(#' + pid + ')'" stroke="#C9D0DC" stroke-width="1" />
+        <path d="M90 372 Q115 378 142 381 L142 393 Q112 391 89 386 Z" fill="#141C33" />
+        <path d="M230 372 Q205 378 178 381 L178 393 Q208 391 231 386 Z" fill="#141C33" />
+
+        <!-- Lanyard y fotocheck -->
+        <path d="M147 198 L157 284 M173 198 L163 284" stroke="#C8F031" stroke-width="5" stroke-linecap="round" />
+        <rect x="155" y="281" width="10" height="9" rx="2" fill="#9AA3B5" />
+        <g class="av-badge">
+          <rect x="141" y="288" width="38" height="50" rx="5" fill="#FFFFFF" stroke="#D5DAE3" />
+          <path d="M141 293 a5 5 0 0 1 5 -5 h28 a5 5 0 0 1 5 5 v7 h-38 z" fill="#FF6B2C" />
+          <rect x="147" y="305" width="13" height="15" rx="2" fill="#C9D3E3" />
+          <rect x="163" y="307" width="11" height="3" rx="1.5" fill="#8D96A9" />
+          <rect x="163" y="313" width="8" height="3" rx="1.5" fill="#C9D0DC" />
+          <path d="M147 326 v6 M149.5 326 v6 M153 326 v6 M155 326 v6 M158.5 326 v6 M162 326 v6 M164 326 v6 M167.5 326 v6 M170 326 v6 M173 326 v6" stroke="#12141A" stroke-width="1.4" />
+        </g>
+
+        <!-- Pose: saludando con la laptop bajo el brazo -->
+        <g class="arms arms-hero">
+          <g transform="rotate(-8 234 318)">
+            <rect x="204" y="276" width="58" height="84" rx="8" fill="#C9CED8" />
+            <rect x="204" y="276" width="58" height="84" rx="8" fill="none" stroke="#A9B0BE" stroke-width="2" />
+            <circle cx="222" cy="298" r="8" fill="#C8F031" />
+            <rect x="232" y="318" width="22" height="12" rx="4" fill="#4DE1F0" />
+            <path d="M216 336 l6 -6 l6 6 l-6 6 z" fill="#9B8CFF" />
+          </g>
+          <path class="arm" d="M216 228 Q238 290 230 338" />
+          <circle cx="229" cy="350" r="14" fill="#E2A985" />
+          <path class="arm" d="M108 228 L76 190" />
+          <g class="av-wave">
+            <path class="arm" d="M76 190 L68 132" />
+            <ellipse cx="68" cy="140" rx="18" ry="8" fill="#131A30" />
+            <ellipse cx="66" cy="112" rx="15" ry="17" fill="#EAB590" />
+            <g fill="#EAB590">
+              <rect x="52" y="86" width="7" height="22" rx="3.5" />
+              <rect x="59" y="80" width="7" height="24" rx="3.5" />
+              <rect x="66" y="80" width="7" height="24" rx="3.5" />
+              <rect x="73" y="86" width="7" height="22" rx="3.5" />
+              <rect x="78" y="104" width="7" height="18" rx="3.5" transform="rotate(-35 81 113)" />
+            </g>
+          </g>
+        </g>
+
+        <!-- Pose: señalando a la derecha -->
+        <g class="arms arms-pointing">
+          <path class="arm" d="M106 228 Q86 290 92 344" />
+          <circle cx="93" cy="356" r="14" fill="#E2A985" />
+          <path class="arm" d="M214 228 L262 248 L298 238" />
+          <g class="av-point">
+            <ellipse cx="296" cy="239" rx="8" ry="17" fill="#131A30" />
+            <circle cx="314" cy="238" r="14" fill="#EAB590" />
+            <rect x="318" y="227" width="28" height="9" rx="4.5" fill="#EAB590" />
+          </g>
+        </g>
+
+        <!-- Pose: programando -->
+        <g class="arms arms-coding">
+          <ellipse cx="160" cy="250" rx="110" ry="56" [attr.fill]="f('glow')" class="av-screen-glow" />
+          <rect x="102" y="256" width="116" height="80" rx="8" fill="#C9CED8" />
+          <rect x="102" y="256" width="116" height="80" rx="8" fill="none" stroke="#A9B0BE" stroke-width="2" />
+          <circle cx="128" cy="282" r="9" fill="#C8F031" />
+          <rect x="176" y="296" width="24" height="12" rx="4" fill="#4DE1F0" />
+          <path d="M146 312 l7 -7 l7 7 l-7 7 z" fill="#9B8CFF" />
+          <path d="M90 336 H230 L220 352 H100 Z" fill="#9FA6B4" />
+          <path class="arm" d="M106 228 Q88 300 122 336" />
+          <path class="arm" d="M214 228 Q232 300 198 336" />
+          <circle class="av-type-l" cx="126" cy="340" r="13" fill="#EAB590" />
+          <circle class="av-type-r" cx="194" cy="340" r="13" fill="#E2A985" />
+        </g>
+
+        <!-- Pose: celebrando -->
+        <g class="arms arms-celebrate">
+          <path class="arm" d="M214 228 Q242 284 200 306" />
+          <circle cx="188" cy="310" r="13" fill="#E2A985" />
+          <g class="av-thumb">
+            <path class="arm" d="M106 230 L72 284 L78 226" />
+            <ellipse cx="78" cy="230" rx="17" ry="8" fill="#131A30" />
+            <rect x="64" y="196" width="30" height="26" rx="10" fill="#EAB590" />
+            <rect x="69" y="172" width="11" height="28" rx="5.5" fill="#EAB590" />
+          </g>
+        </g>
+
+        <!-- Cabeza -->
+        <g class="av-head">
+          <path d="M100 116 Q94 62 140 44 Q196 30 220 76 Q226 96 220 116 Z" [attr.fill]="f('hair')" />
+          <ellipse cx="99" cy="128" rx="11" ry="16" fill="#E2A985" />
+          <ellipse cx="221" cy="128" rx="11" ry="16" fill="#D29770" />
+          <path d="M100 112 Q100 58 160 56 Q220 58 220 112 Q220 166 188 186 Q160 200 132 186 Q100 166 100 112 Z" [attr.fill]="f('face')" />
+          <ellipse cx="124" cy="154" rx="10" ry="6" fill="#F09A86" opacity=".32" />
+          <ellipse cx="196" cy="154" rx="10" ry="6" fill="#F09A86" opacity=".32" />
+
+          <g class="av-eyes">
+            <path d="M126 124 q11 -8 22 0 M172 124 q11 -8 22 0" stroke="#1B1B22" stroke-width="2.6" fill="none" stroke-linecap="round" />
+            <ellipse cx="137" cy="131" rx="7.5" ry="7.5" fill="#1B1B22" />
+            <ellipse cx="183" cy="131" rx="7.5" ry="7.5" fill="#1B1B22" />
+            <g class="av-pupils" fill="#FFFFFF">
+              <circle cx="139.5" cy="128.5" r="2.4" />
+              <circle cx="185.5" cy="128.5" r="2.4" />
+            </g>
+          </g>
+          <g class="av-brows">
+            <path d="M123 109 Q137 101 151 107 M169 107 Q183 101 197 109" stroke="#17181D" stroke-width="5.5" stroke-linecap="round" fill="none" />
+          </g>
+          <path d="M160 134 Q156 147 152 150 Q160 155 168 150" stroke="#C0815E" stroke-width="2.5" fill="none" stroke-linecap="round" />
+          <path d="M148 158 Q160 155 172 158" stroke="#3A2A22" stroke-width="2" opacity=".22" fill="none" />
+          <g class="mouth-smile">
+            <path d="M147 166 Q160 174 174 165 Q160 169 147 166 Z" fill="#FFFFFF" />
+            <path d="M144 164 Q160 177 177 163" stroke="#8E4636" stroke-width="3.5" fill="none" stroke-linecap="round" />
+          </g>
+          <g class="mouth-open">
+            <path d="M143 162 Q160 186 178 161 Q160 168 143 162 Z" fill="#7A3427" />
+            <path d="M148 164 Q160 169 173 163 L172 167 Q160 172 149 168 Z" fill="#FFFFFF" />
+          </g>
+
+          <path d="M101 114 Q96 72 138 50 Q190 34 220 64 Q226 84 221 106 L213 92 Q202 78 188 80 L180 73 Q162 82 142 84 L133 79 Q116 90 109 104 Z" [attr.fill]="f('hair')" />
+          <path d="M101 106 H109 L108 130 Q104 130 102 127 Z M219 106 H211 L212 130 Q216 130 218 127 Z" fill="#17181D" />
+          <path d="M124 56 Q150 14 206 30 Q218 38 216 52 Q194 38 168 48 Q146 44 124 56 Z" fill="#23252D" />
+          <path d="M146 40 Q178 28 208 42 M120 70 Q140 58 162 60 M170 56 Q192 52 212 62" stroke="#474B58" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".75" />
+        </g>
+      </g>
+    </svg>
+  }
+</div>

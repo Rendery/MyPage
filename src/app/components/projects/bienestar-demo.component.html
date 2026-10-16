@@ -1,0 +1,137 @@
+<div class="tabs" role="tablist" aria-label="Módulos del ecosistema Bienestar">
+  @for (m of modules; track m.id) {
+    <button type="button" role="tab" class="tab" [class.active]="active() === m.id" [attr.aria-selected]="active() === m.id" (click)="pick(m.id)">
+      <span class="status-dot" [class.dev]="m.status === 'en desarrollo'" aria-hidden="true"></span>
+      <span class="mono">{{ m.name }}</span>
+    </button>
+  }
+</div>
+
+<div class="panel" role="tabpanel">
+  <div class="panel-info">
+    <span class="state mono" [class.dev]="current().status === 'en desarrollo'">● {{ current().status }}</span>
+    <p>{{ current().desc }}</p>
+  </div>
+
+  @switch (active()) {
+    @case ('sunat') {
+      <div class="demo sunat">
+        <div class="form">
+          <div class="seg" role="group" aria-label="Tipo de comprobante">
+            <button type="button" [class.active]="tipo() === 'boleta'" (click)="setTipo('boleta')">Boleta</button>
+            <button type="button" [class.active]="tipo() === 'factura'" (click)="setTipo('factura')">Factura</button>
+          </div>
+          <label>
+            <span class="mono">{{ tipo() === 'boleta' ? 'DNI' : 'RUC' }}</span>
+            <input #d inputmode="numeric" [value]="doc()" (input)="setDoc(d.value)" [attr.maxlength]="tipo() === 'boleta' ? 8 : 11" />
+          </label>
+          <label>
+            <span class="mono">Monto (S/)</span>
+            <input #m type="number" inputmode="decimal" min="1" [value]="monto()" (input)="setMonto(m.value)" />
+          </label>
+          @if (docError(); as err) {
+            <p class="err mono">{{ err }}</p>
+          }
+          <button type="button" class="btn primary go" (click)="generar()" [disabled]="!!docError()">Generar comprobante</button>
+        </div>
+
+        <div class="printer">
+          <div class="slot" aria-hidden="true"></div>
+          @if (comprobante(); as c) {
+              <div class="receipt mono">
+                <b>{{ tipo() === 'boleta' ? 'BOLETA' : 'FACTURA' }} DE VENTA ELECTRÓNICA</b>
+                <span class="serie">{{ c.serie }}</span>
+                <hr />
+                <span>Fecha: {{ today }}</span>
+                <span>{{ tipo() === 'boleta' ? 'DNI' : 'RUC' }}: {{ c.doc }}</span>
+                <span>Servicio: sesión de terapia</span>
+                <hr />
+                <span class="row"><i>Op. gravada</i><i>S/ {{ c.base | number: '1.2-2' }}</i></span>
+                <span class="row"><i>IGV 18%</i><i>S/ {{ c.igv | number: '1.2-2' }}</i></span>
+                <span class="row total"><i>TOTAL</i><i>S/ {{ c.total | number: '1.2-2' }}</i></span>
+                <span class="ready">✓ PDF listo para enviar</span>
+              </div>
+          } @else {
+            <p class="empty mono">El comprobante aparecerá aquí ↓</p>
+          }
+        </div>
+      </div>
+    }
+
+    @case ('agendas') {
+      <div class="demo agendas">
+        <ul class="citas">
+          @for (c of citas(); track c.hora; let i = $index) {
+            <li [class.pending]="!c.pagado">
+              <span class="hora mono">{{ c.hora }}</span>
+              <span class="who">
+                <b>{{ c.paciente }}</b>
+                <small>{{ c.terapeuta }} · S/ {{ c.monto }}</small>
+              </span>
+              <button type="button" class="pay mono" (click)="togglePago(i)" [attr.aria-label]="'Marcar como ' + (c.pagado ? 'pendiente' : 'pagado')">
+                {{ c.pagado ? '✓ pagado' : '⚠ pendiente' }}
+              </button>
+            </li>
+          }
+        </ul>
+        <div class="wa">
+          <div class="wa-head mono"><span class="wa-dot"></span> Mensaje para WhatsApp</div>
+          <pre class="wa-bubble">{{ mensaje() }}</pre>
+          <button type="button" class="btn go" (click)="copiarMensaje()">Copiar mensaje ⧉</button>
+        </div>
+      </div>
+    }
+
+    @case ('finanzas') {
+      <div class="demo finanzas">
+        <div class="fin-head">
+          <div class="seg" role="group" aria-label="Período">
+            <button type="button" [class.active]="periodo() === 'semana'" (click)="periodo.set('semana')">Semana</button>
+            <button type="button" [class.active]="periodo() === 'mes'" (click)="periodo.set('mes')">Mes</button>
+          </div>
+          <div class="neto">
+            <span class="mono">Neto del período</span>
+            <b>S/ {{ neto() | number: '1.0-0' }}</b>
+          </div>
+        </div>
+
+        <div class="stack-bar" aria-hidden="true">
+          @for (c of caja(); track c.id) {
+            @if (c.value > 0) {
+              <span [style.flex-grow]="share(c.value)" [style.background]="c.color" [class.dim]="foco() && foco() !== c.id"></span>
+            }
+          }
+        </div>
+
+        <ul class="legend">
+          @for (c of caja(); track c.id) {
+            <li>
+              <button type="button" (mouseenter)="foco.set(c.id)" (mouseleave)="foco.set(null)" (focus)="foco.set(c.id)" (blur)="foco.set(null)" (click)="foco.set(foco() === c.id ? null : c.id)" [class.active]="foco() === c.id">
+                <i [style.background]="c.color"></i>
+                <span>{{ c.label }}</span>
+                <b class="mono" [class.neg]="c.value < 0">S/ {{ c.value | number: '1.0-0' }}</b>
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    @case ('informes') {
+      <div class="demo informes">
+        <div class="kpis">
+          <div><span class="mono">Evaluaciones</span><b class="sk"></b></div>
+          <div><span class="mono">Pacientes</span><b class="sk"></b></div>
+          <div><span class="mono">Informes</span><b class="sk"></b></div>
+        </div>
+        <svg class="chart" viewBox="0 0 300 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="area" d="M0 80 C40 70 60 40 100 48 S160 20 200 30 S260 10 300 18 V100 H0 Z" />
+          <path class="line" d="M0 80 C40 70 60 40 100 48 S160 20 200 30 S260 10 300 18" pathLength="1" />
+        </svg>
+        <div class="dev-note mono">🛠 En desarrollo: reemplazará las hojas de cálculo de los terapeutas.</div>
+      </div>
+    }
+  }
+
+  <p class="footnote mono">Datos de ejemplo · la versión real maneja información privada de la clínica.</p>
+</div>

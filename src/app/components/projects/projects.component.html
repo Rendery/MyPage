@@ -1,16 +1,58 @@
-<div class="glass-card projects-container">
-  <h2 class="font-title header-title">Latest Projects</h2>
-  
-  <div class="project-grid">
-    @for (p of projects; track $index) {
-      <a [href]="p.link" target="_blank" class="project-card">
-        <div class="icon">{{ p.icon }}</div>
-        <div class="p-content">
-          <div class="p-title">{{ p.title }}</div>
-          <div class="p-desc text-muted">{{ p.desc }}</div>
+<section id="proyectos" class="section">
+  <div class="wrap">
+    <p class="eyebrow" appReveal="fade">05 · <b>Proyectos</b></p>
+    <h2 class="section-title" appSplit>Software que <em>se usa de verdad</em></h2>
+    <p class="section-lead" appReveal>Mi proyecto más fuerte: un ecosistema de apps internas que construí solo, sin área de sistemas, y que hoy está en producción. Pruébalo:</p>
+
+    <article class="featured card" appReveal>
+      <header class="feat-head">
+        <div>
+          <span class="feat-tag mono">★ Destacado · Bienestar · 2026</span>
+          <h3>Ecosistema de apps internas</h3>
+          <p>
+            Levanté los procesos de una empresa de ~15 personas (agenda, caja, facturación e información) y los automaticé con aplicaciones
+            propias: modulares, trazables y fáciles de usar para personas no técnicas.
+          </p>
         </div>
-        <div class="arrow">↗</div>
-      </a>
-    }
+        <ul class="stack">
+          @for (t of ['Python', 'HTML / JS', 'PostgreSQL', 'Railway', 'Cloudflare R2', 'Playwright', 'GitHub']; track t) {
+            <li class="chip">{{ t }}</li>
+          }
+        </ul>
+      </header>
+
+      <app-bienestar-demo />
+    </article>
+
+    <div class="rail-head">
+      <h3 class="rail-title">Más proyectos</h3>
+      <div class="rail-nav">
+        <button type="button" class="arrow" (click)="scroll(-1)" [disabled]="atStart()" aria-label="Proyecto anterior">←</button>
+        <button type="button" class="arrow" (click)="scroll(1)" [disabled]="atEnd()" aria-label="Proyecto siguiente">→</button>
+      </div>
+    </div>
+
+    <div class="rail" #rail data-cursor="arrastra" appReveal="stagger">
+      @for (p of projects; track p.title) {
+        <article class="proj card spotlight" appTilt="5" [style.--accent]="p.accent">
+          <div class="proj-top">
+            <span class="emoji" aria-hidden="true">{{ p.emoji }}</span>
+            <span class="meta mono">{{ p.org }} · {{ p.year }}</span>
+          </div>
+          <h4>{{ p.title }}</h4>
+          <p>{{ p.desc }}</p>
+          <ul class="bul">
+            @for (b of p.bullets; track b) {
+              <li>{{ b }}</li>
+            }
+          </ul>
+          <ul class="tags">
+            @for (t of p.tags; track t) {
+              <li class="chip">{{ t }}</li>
+            }
+          </ul>
+        </article>
+      }
+    </div>
   </div>
-</div>
+</section>

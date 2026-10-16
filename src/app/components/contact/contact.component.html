@@ -1,0 +1,63 @@
+<section id="contacto" class="section contact">
+  <div class="wrap contact-grid">
+    <div class="contact-copy">
+      <p class="eyebrow" appReveal="fade">08 · <b>Contacto</b></p>
+      <h2 class="contact-title" appSplit>¿Construimos algo <em>juntos?</em></h2>
+      <p class="section-lead" appReveal>Busco una práctica preprofesional, remota o híbrida, donde pueda aportar desde el primer día. Respondo rápido.</p>
+
+      <div class="channels" appReveal="stagger">
+        <button type="button" class="channel" (click)="copyEmail()" data-cursor="copiar">
+          <span class="ch-ico" aria-hidden="true">✉</span>
+          <span><small class="mono">Correo · toca para copiar</small><b>{{ profile.email }}</b></span>
+        </button>
+        <a class="channel" [href]="profile.linkedin" target="_blank" rel="noopener">
+          <span class="ch-ico" aria-hidden="true">in</span>
+          <span><small class="mono">LinkedIn</small><b>Edery Abanto</b></span>
+        </a>
+        <a class="channel" [href]="profile.github" target="_blank" rel="noopener">
+          <span class="ch-ico" aria-hidden="true">⌥</span>
+          <span><small class="mono">GitHub</small><b>EderyRAV</b></span>
+        </a>
+        <a class="channel" [href]="profile.whatsapp" target="_blank" rel="noopener">
+          <span class="ch-ico wa" aria-hidden="true">✆</span>
+          <span><small class="mono">WhatsApp</small><b>{{ profile.phone }}</b></span>
+        </a>
+      </div>
+
+      <a class="btn primary cv" [href]="profile.cv" download appMagnetic>Descargar CV en PDF <span aria-hidden="true">↓</span></a>
+    </div>
+
+    <div class="contact-side">
+      <app-avatar class="contact-avatar" pose="celebrate" />
+
+      <form class="quick card" (submit)="$event.preventDefault(); send()" appReveal>
+        <p class="quick-title">Escríbeme en 10 segundos</p>
+        <div class="row">
+          <label>
+            <span class="mono">Tu nombre</span>
+            <input #n type="text" autocomplete="name" [value]="name()" (input)="name.set(n.value)" />
+          </label>
+          <label>
+            <span class="mono">Empresa</span>
+            <input #c type="text" autocomplete="organization" [value]="company()" (input)="company.set(c.value)" />
+          </label>
+        </div>
+        <label>
+          <span class="mono">Mensaje</span>
+          <textarea #m rows="3" placeholder="Hola Edery, me gustaría conversar contigo sobre…" [value]="message()" (input)="message.set(m.value)"></textarea>
+        </label>
+        <button type="submit" class="btn primary" appMagnetic>Abrir en mi correo <span aria-hidden="true">→</span></button>
+        <p class="hint mono">Se abre tu app de correo con el mensaje listo. No guardo ningún dato.</p>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer wrap">
+    <div class="foot-big" aria-hidden="true">EDERY ABANTO</div>
+    <div class="foot-row">
+      <p class="mono">© {{ year }} Edery Abanto · Diseñado y construido con Angular, GSAP y Claude Code</p>
+      <p class="mono easter">Prueba <kbd>Ctrl</kbd> + <kbd>K</kbd> · o el código Konami ↑↑↓↓←→←→BA</p>
+      <button type="button" class="to-top mono" (click)="top()">Volver arriba ↑</button>
+    </div>
+  </footer>
+</section>

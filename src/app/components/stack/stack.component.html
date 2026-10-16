@@ -1,0 +1,48 @@
+<section id="stack" class="section">
+  <div class="marquee" #marquee aria-hidden="true">
+    @for (row of [rowA, rowB]; track $index; let odd = $odd) {
+      <div class="track" [class.outline]="odd">
+        @for (round of [0, 1]; track round) {
+          @for (s of row; track s.name) {
+            <span>{{ s.name }}</span><i>✦</i>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <div class="wrap">
+    <p class="eyebrow" appReveal="fade">06 · <b>Stack</b></p>
+    <h2 class="section-title" appSplit>Mi caja de <em>herramientas</em></h2>
+    <p class="section-lead" appReveal>Filtra por área. Todo lo que aparece aquí lo usé en trabajo real, en la universidad o en cursos certificados.</p>
+
+    <div class="filters" role="group" aria-label="Filtrar tecnologías" appReveal>
+      <button type="button" class="f" [class.active]="filter() === 'Todo'" [attr.aria-pressed]="filter() === 'Todo'" (click)="setFilter('Todo')">
+        Todo <sup>{{ all.length }}</sup>
+      </button>
+      @for (c of cats; track c) {
+        <button type="button" class="f" [class.active]="filter() === c" [attr.aria-pressed]="filter() === c" (click)="setFilter(c)">
+          {{ c }} <sup>{{ counts()[c] }}</sup>
+        </button>
+      }
+    </div>
+
+    <div class="grid" #grid>
+      @for (s of all; track s.name) {
+        <div class="tile" [class.hidden]="!visible(s.cat)" [attr.data-flip-id]="s.name" [attr.data-cat]="s.cat">
+          <span class="name">{{ s.name }}</span>
+          <span class="cat mono">{{ s.cat }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="methods" appReveal>
+      <span class="mono">Cómo trabajo</span>
+      <ul>
+        @for (m of methods; track m) {
+          <li>{{ m }}</li>
+        }
+      </ul>
+    </div>
+  </div>
+</section>

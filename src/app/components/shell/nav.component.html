@@ -1,0 +1,35 @@
+<div class="progress" aria-hidden="true"><span #progress></span></div>
+
+<header class="topbar" [class.hidden]="hidden() && !ui.paletteOpen()" [class.scrolled]="scrolled()">
+  <a class="logo" href="#inicio" (click)="go('inicio', $event)" aria-label="Edery Abanto, ir al inicio">
+    <span class="mark">EA</span>
+    <span class="logo-text">Edery<b>.</b></span>
+  </a>
+
+  <nav class="links" aria-label="Secciones">
+    @for (l of links; track l.id) {
+      <a [href]="'#' + l.id" [class.active]="ui.activeSection() === l.id" [attr.aria-current]="ui.activeSection() === l.id ? 'true' : null" (click)="go(l.id, $event)">
+        {{ l.label }}
+      </a>
+    }
+  </nav>
+
+  <div class="actions">
+    <button type="button" class="icon-btn cmd" (click)="ui.openPalette()" aria-label="Abrir paleta de comandos" data-cursor="comandos">
+      <span class="mono">{{ isMac ? '⌘' : 'Ctrl' }} K</span>
+    </button>
+    <button type="button" class="icon-btn" (click)="toggleTheme($event)" [attr.aria-label]="theme.theme() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
+      <span class="theme-ico" [class.light]="theme.theme() === 'light'" aria-hidden="true"></span>
+    </button>
+    <a class="btn primary hire" href="#contacto" (click)="go('contacto', $event)" appMagnetic>Contrátame</a>
+  </div>
+</header>
+
+<nav class="dock" aria-label="Navegación rápida">
+  @for (d of dock; track d.id) {
+    <a [href]="'#' + d.id" [class.active]="ui.activeSection() === d.id" [attr.aria-current]="ui.activeSection() === d.id ? 'true' : null" (click)="go(d.id, $event)">
+      <span class="d-ico" aria-hidden="true">{{ d.icon }}</span>
+      <span class="d-label">{{ d.label }}</span>
+    </a>
+  }
+</nav>

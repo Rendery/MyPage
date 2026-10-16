@@ -1,59 +1,62 @@
-# MyPage
+# Edery Abanto · CV web interactivo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.4.
+Portafolio y CV web en una sola página: personaje 2.5D de cuerpo completo, fotocheck 3D con físicas que se personaliza con el nombre de la empresa, demos interactivas de proyectos reales y motion design.
 
-## Development server
+Hecho con **Angular 19** (signals, componentes standalone), **GSAP** (ScrollTrigger, SplitText, Flip, Draggable) y **Lenis** para el scroll suave.
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Desarrollo
 
 ```bash
-ng generate component component-name
+npm install
+npm start          # http://localhost:4200
+npm run build      # salida en dist/my-page/browser
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Dónde se edita cada cosa
+
+| Qué | Archivo |
+|---|---|
+| Todos los datos del CV (experiencia, proyectos, stack, certificaciones, contacto) | `src/app/data/profile.data.ts` |
+| Sesiones de ejemplo de la terminal de IA | `src/app/components/ai-lab/ai-scripts.ts` |
+| Colores, tipografías y tema claro/oscuro | `src/styles.scss` |
+| CV en PDF que se descarga | `public/cv/Edery_Abanto_CV.pdf` |
+
+## Imágenes del personaje
+
+Si falta alguna imagen, la web muestra un personaje vectorial de reemplazo.
+Para usar las tuyas, genera las imágenes con los prompts de [`docs/PROMPTS-IMAGENES.md`](docs/PROMPTS-IMAGENES.md) y guárdalas en `public/images/avatar/` con estos nombres:
+
+- `hero.png`: portada
+- `pointing.png`: sección del fotocheck
+- `coding.png`: sección de IA
+- `celebrate.png`: contacto y botón "Contratar"
+- `badge-photo.png`: foto dentro del fotocheck (si falta, muestra las iniciales)
+
+Después de agregar o reemplazar un PNG, genera las versiones livianas (WebP) y la imagen para redes (`og.jpg`):
 
 ```bash
-ng generate --help
+python scripts/optimize_avatars.py
 ```
 
-## Building
+La web carga primero el `.webp` y, si no existe, el `.png`. Si reemplazas un PNG y no corres el script, se seguirá viendo el WebP anterior.
 
-To build the project run:
+## Enlace personalizado para reclutadores
 
-```bash
-ng build
+El fotocheck lee la URL, así que puedes enviar un enlace ya personalizado:
+
+```
+https://TU-DOMINIO/?empresa=Interbank&color=00A86B&rol=1#fotocheck
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- `empresa`: nombre que aparece en el fotocheck y en el cordón.
+- `color`: color de la marca en hexadecimal, sin `#`.
+- `rol`: `0` Practicante de Software · `1` Desarrollador Full Stack · `2` QA y Automatización · `3` Automatización e IA.
 
-## Running unit tests
+El botón **Compartir** de la sección genera este enlace automáticamente.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Interacciones
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Escritorio:** cursor personalizado, parallax con el mouse, tarjetas con inclinación 3D, botones magnéticos, paleta de comandos (`Ctrl/⌘ + K` o `/`).
+- **Móvil:** dock de navegación inferior, parallax con el giroscopio (en iOS se activa con un botón), fotocheck arrastrable con el dedo y vibración en Android.
+- **Easter egg:** código Konami (↑ ↑ ↓ ↓ ← → ← → B A).
+- Respeta `prefers-reduced-motion`: sin scroll suave ni animaciones si el sistema lo pide.

@@ -1,0 +1,186 @@
+:host { display: contents; }
+
+.progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
+
+  span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--lime), var(--cyan), var(--violet));
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+}
+
+.topbar {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: min(var(--maxw), calc(100% - 24px));
+  height: 60px;
+  padding: 0 8px 0 16px;
+  translate: -50% 0;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: translate 0.5s var(--ease-out), background-color 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+
+  &.scrolled {
+    background: var(--glass);
+    border-color: var(--line);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  &.hidden { translate: -50% -120px; }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+
+  b { color: var(--lime); }
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  border: 2px solid var(--lime);
+  color: var(--lime-ink);
+  font-size: 14px;
+  transition: rotate 0.6s var(--ease-spring);
+}
+
+.logo:hover .mark { rotate: -12deg; }
+
+.links {
+  display: flex;
+  gap: 2px;
+  margin-inline: auto;
+
+  a {
+    position: relative;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.3s, background-color 0.3s;
+
+    &:hover { color: var(--text); }
+    &.active {
+      color: var(--text);
+      background: var(--surface-2);
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  font-size: 12px;
+  transition: border-color 0.3s;
+
+  &:hover { border-color: var(--text); }
+}
+
+.theme-ico {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: inset -6px -4px 0 0 var(--surface);
+  transition: box-shadow 0.5s var(--ease-out), rotate 0.5s var(--ease-out);
+
+  &.light {
+    box-shadow: inset 0 0 0 0 var(--surface), 0 0 0 4px color-mix(in srgb, var(--orange) 30%, transparent);
+    background: var(--orange);
+    rotate: 180deg;
+  }
+}
+
+.hire { min-height: 42px; padding: 0 18px; font-size: 14px; }
+
+/* --- Dock móvil --- */
+.dock { display: none; }
+
+@media (max-width: 1080px) {
+  .links { display: none; }
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    top: 8px;
+    height: 54px;
+    padding: 0 6px 0 10px;
+  }
+  .hire { display: none; }
+  .cmd span { font-size: 11px; }
+  .logo-text { display: none; }
+
+  .dock {
+    position: fixed;
+    left: 50%;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    z-index: 50;
+    display: flex;
+    gap: 2px;
+    padding: 6px;
+    translate: -50% 0;
+    border-radius: 22px;
+    background: var(--glass);
+    border: 1px solid var(--line-strong);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow: var(--shadow);
+
+    a {
+      display: grid;
+      justify-items: center;
+      gap: 2px;
+      min-width: 62px;
+      padding: 7px 6px 6px;
+      border-radius: 16px;
+      color: var(--muted);
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.3s, color 0.3s, transform 0.25s var(--ease-spring);
+
+      &:active { transform: scale(0.92); }
+      &.active {
+        background: var(--lime);
+        color: var(--on-lime);
+      }
+    }
+  }
+
+  .d-ico { font-size: 17px; line-height: 1.2; }
+  .d-label { font-size: 10px; font-weight: 600; }
+}

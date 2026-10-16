@@ -1,27 +1,82 @@
-<div class="glass-card education-container">
-  <div class="header">
-    <h2 class="font-title">Certifications & Courses</h2>
-    <span class="count-badge">{{ courses.length }}</span>
-  </div>
+<section id="formacion" class="section">
+  <div class="wrap">
+    <p class="eyebrow" appReveal="fade">07 · <b>Formación</b></p>
+    <h2 class="section-title" appSplit>Aprendiendo <em>siempre</em></h2>
 
-  <div class="edu-list">
-    @for (c of courses; track $index) {
-      <div class="edu-item">
-        <div class="icon-side">
-          <div class="certificate-icon">🎓</div>
+    <div class="edu" appReveal="stagger">
+      @for (e of education; track e.title; let first = $first) {
+        <article class="edu-card card spotlight" appTilt="4" [class.main]="first">
+          @if (first) {
+            <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="52" class="track" />
+              <circle cx="60" cy="60" r="52" class="fill" pathLength="1" />
+            </svg>
+            <div class="ring-label" aria-hidden="true"><b>10.º</b><span class="mono">de 10 ciclos</span></div>
+          }
+          <span class="period mono">{{ e.period }}</span>
+          <h3>{{ e.title }}</h3>
+          <p class="org">{{ e.org }}</p>
+          <p class="detail">{{ e.detail }}</p>
+        </article>
+      }
+      <article class="edu-card card langs">
+        <span class="period mono">Idiomas</span>
+        @for (l of languages; track l.name) {
+          <p class="lang"><b>{{ l.name }}</b> <span>{{ l.level }}</span></p>
+        }
+      </article>
+    </div>
+
+    <div class="certs">
+      <div class="certs-head" appReveal>
+        <div class="big">
+          <b><span [appCountUp]="total">{{ total }}</span></b>
+          <span>certificaciones<br />verificables</span>
         </div>
-        <div class="content-side">
-          <h4 class="title">{{ c.title }}</h4>
-          <div class="meta text-muted">
-            <span class="inst">{{ c.institution }}</span>
-            <span class="dot">•</span>
-            <span class="date">{{ c.date }}</span>
+
+        <div class="orgbar" role="group" aria-label="Filtrar por institución">
+          <div class="bar" aria-hidden="true">
+            @for (o of orgs; track o.org; let i = $index) {
+              <span [style.flex-grow]="o.n" [class.dim]="org() && org() !== o.org" [style.--i]="i"></span>
+            }
           </div>
-          <div class="credential-box">
-            <span class="cred-label">ID:</span> {{ c.credential }}
+          <div class="org-chips">
+            @for (o of orgs; track o.org; let i = $index) {
+              <button type="button" [class.active]="org() === o.org" [attr.aria-pressed]="org() === o.org" (click)="pickOrg(o.org)" [style.--i]="i">
+                <i></i>{{ o.org }} <sup>{{ o.n }}</sup>
+              </button>
+            }
           </div>
         </div>
       </div>
-    }
+
+      <label class="search">
+        <span class="sr-only">Buscar certificación</span>
+        <span aria-hidden="true">⌕</span>
+        <input #q type="search" placeholder="Busca: Python, Scrum, ciberseguridad, machine learning…" [value]="query()" (input)="query.set(q.value)" />
+      </label>
+
+      <ul class="cert-list">
+        @for (c of shown(); track c.id) {
+          <li class="cert">
+            <div>
+              <p class="title">{{ c.title }}</p>
+              <p class="meta mono">{{ c.org }} · {{ c.date }}</p>
+            </div>
+            <button type="button" class="id mono" (click)="copyId(c.id)" [attr.aria-label]="'Copiar ID ' + c.id" data-cursor="copiar">
+              {{ c.id }} <span aria-hidden="true">⧉</span>
+            </button>
+          </li>
+        } @empty {
+          <li class="empty mono">Sin resultados para “{{ query() }}”.</li>
+        }
+      </ul>
+
+      @if (!org() && !query()) {
+        <button type="button" class="btn more" (click)="expanded.set(!expanded())">
+          {{ expanded() ? 'Ver menos' : 'Ver las ' + total + ' certificaciones' }}
+        </button>
+      }
+    </div>
   </div>
-</div>
+</section>

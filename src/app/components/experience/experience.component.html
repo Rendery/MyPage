@@ -1,42 +1,61 @@
-<div class="glass-card experience-container">
-  <div class="timeline">
-    @for (j of jobs; track $index) {
-      <div class="timeline-item" [class.expanded]="j.expanded">
-        
-        <!-- Línea conectora del timeline -->
-        <div class="timeline-line">
-          <div class="timeline-dot"></div>
-        </div>
+<section id="experiencia" class="section">
+  <div class="wrap">
+    <p class="eyebrow" appReveal="fade">04 · <b>Experiencia</b></p>
+    <h2 class="section-title" appSplit>Donde ya <em>aporté</em></h2>
+    <p class="section-lead" appReveal>Del más reciente al más antiguo. Abre cada etapa para ver los logros.</p>
 
-        <div class="job-card" (click)="toggleExpand(j)">
-          <div class="job-header">
-            <div class="logo-box">
-              <img [src]="j.logo" alt="logo" onerror="this.src='https://ui-avatars.com/api/?name=UPC&background=random'">
-            </div>
-            
-            <div class="job-meta">
-              <h3 class="role">{{ j.role }}</h3>
-              <div class="company text-muted">{{ j.company }}</div>
-            </div>
+    <div class="timeline" #timeline>
+      <div class="tl-line" aria-hidden="true"><div class="tl-progress"></div></div>
 
-            <div class="job-actions">
-              <div class="date badge">{{ j.from }}{{ j.to ? (' - ' + j.to) : ' - Present' }}</div>
-              <div class="expand-icon" [class.rotated]="j.expanded">▼</div>
-            </div>
+      @for (job of jobs; track job.company; let i = $index) {
+        <article class="job" [class.is-open]="open().has(i)">
+          <span class="tl-dot" [class.current]="job.current" aria-hidden="true"></span>
+
+          <div class="job-when" appReveal="left">
+            <span class="period mono">{{ job.period }}</span>
+            <span class="duration">{{ job.duration }}</span>
+            @if (job.current) {
+              <span class="now mono"><i></i> Actual</span>
+            }
           </div>
 
-          <!-- Contenido expandido con animación -->
-          <div class="job-details-wrapper" [style.max-height]="j.expanded ? '500px' : '0'">
-            <div class="job-details">
-              <div class="info-tags">
-                <span class="tag cycle-tag"><span class="icon">🔄</span> {{ j.cycle }}</span>
-                <span class="tag course-tag"><span class="icon">📚</span> {{ j.course }}</span>
+          <div class="job-card card spotlight" appTilt="3" appReveal>
+            <header>
+              <span class="company-badge" aria-hidden="true">{{ job.companyShort.slice(0, 2).toUpperCase() }}</span>
+              <div>
+                <h3>{{ job.role }}</h3>
+                <p class="company">{{ job.company }} · <span class="muted">{{ job.place }}</span></p>
               </div>
-              <p class="description">{{ j.description }}</p>
+            </header>
+
+            <p class="summary">{{ job.summary }}</p>
+
+            <button type="button" class="job-toggle mono" [attr.aria-expanded]="open().has(i)" (click)="toggle(i)">
+              {{ open().has(i) ? 'Ocultar logros' : 'Ver logros (' + job.bullets.length + ')' }}
+              <span class="plus" aria-hidden="true"></span>
+            </button>
+
+            <div class="job-more">
+              <div>
+                <ul class="bullets">
+                  @for (b of job.bullets; track b) {
+                    <li>{{ b }}</li>
+                  }
+                </ul>
+                @if (job.previousRole; as prev) {
+                  <p class="prev mono">Antes en la misma empresa: {{ prev.role }} · {{ prev.period }}</p>
+                }
+              </div>
             </div>
+
+            <ul class="tags">
+              @for (t of job.tags; track t) {
+                <li class="chip">{{ t }}</li>
+              }
+            </ul>
           </div>
-        </div>
-      </div>
-    }
+        </article>
+      }
+    </div>
   </div>
-</div>
+</section>

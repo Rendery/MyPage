@@ -1,0 +1,169 @@
+:host {
+  --hx: 0;
+  --hy: 0;
+  display: block;
+  position: relative;
+  aspect-ratio: 2 / 3;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:host(.pose-coding) { aspect-ratio: 1 / 1; }
+
+.av-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.av-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5%;
+  width: 46%;
+  height: 5%;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.45), transparent);
+  animation: shadow 4s ease-in-out infinite;
+}
+
+:host(.is-image) .av-shadow { animation: none; }
+
+/* --- Imagen generada (PNG con fondo transparente) --- */
+.av-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 0;
+  pointer-events: none;
+  transform: perspective(1200px) rotateY(calc(var(--hx) * 6deg)) rotateX(calc(var(--hy) * -2deg));
+  transform-origin: 50% 100%;
+  transition: opacity 0.6s;
+
+  &.ready {
+    opacity: 1;
+    animation: breathe-img 4.5s ease-in-out infinite;
+    filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.35));
+  }
+}
+
+/* --- Personaje vectorial de reemplazo --- */
+.av-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.arm {
+  fill: none;
+  stroke: #22305a;
+  stroke-width: 34;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.arms { display: none; }
+:host(.pose-hero) .arms-hero,
+:host(.pose-pointing) .arms-pointing,
+:host(.pose-coding) .arms-coding,
+:host(.pose-celebrate) .arms-celebrate { display: inline; }
+
+.mouth-open { display: none; }
+:host(.pose-celebrate) {
+  .mouth-open { display: inline; }
+  .mouth-smile { display: none; }
+}
+
+.av-upper {
+  transform-box: view-box;
+  transform-origin: 160px 390px;
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.av-head {
+  transform-box: view-box;
+  transform-origin: 160px 192px;
+  transform: rotate(calc(var(--hx) * 6deg)) translate(calc(var(--hx) * 4px), calc(var(--hy) * 3px));
+}
+
+.av-pupils {
+  transform: translate(calc(var(--hx) * 2.5px), calc(var(--hy) * 2px));
+}
+
+.av-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5.2s infinite;
+}
+
+.av-wave {
+  transform-box: view-box;
+  transform-origin: 76px 190px;
+  animation: wave 1.6s ease-in-out infinite;
+}
+
+.av-point {
+  animation: point 1.4s ease-in-out infinite;
+}
+
+.av-thumb {
+  transform-box: view-box;
+  transform-origin: 106px 230px;
+  animation: thumb 1.8s ease-in-out infinite;
+}
+
+.av-type-l { animation: type 0.36s ease-in-out infinite alternate; }
+.av-type-r { animation: type 0.36s 0.18s ease-in-out infinite alternate; }
+.av-screen-glow { animation: glow 2.4s ease-in-out infinite; }
+
+.av-badge {
+  transform-box: view-box;
+  transform-origin: 160px 284px;
+  animation: badge-swing 4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  50% { transform: scaleY(1.012) translateY(-1.5px); }
+}
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+@keyframes wave {
+  0%, 100% { transform: rotate(-10deg); }
+  50% { transform: rotate(16deg); }
+}
+@keyframes point {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+@keyframes thumb {
+  0%, 100% { transform: rotate(0); }
+  50% { transform: rotate(-5deg); }
+}
+@keyframes type {
+  to { transform: translateY(-3px); }
+}
+@keyframes glow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes badge-swing {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+/* Respiración sutil (las fotos reales no flotan) */
+@keyframes breathe-img {
+  0%, 100% { scale: 1 1; }
+  50% { scale: 1.004 1.012; }
+}
+@keyframes shadow {
+  0%, 100% { scale: 1; }
+  50% { scale: 1.02; }
+}

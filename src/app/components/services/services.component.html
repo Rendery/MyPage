@@ -1,0 +1,61 @@
+<section id="servicios" class="section">
+  <div class="wrap">
+    <p class="eyebrow" appReveal="fade">02 · <b>Qué puedo hacer</b></p>
+    <h2 class="section-title" appSplit>Lo que aporto <em>desde el día uno</em></h2>
+    <p class="section-lead" appReveal>Toca cada tarjeta para ver dónde ya lo hice en un trabajo real.</p>
+
+    <div class="bento" appReveal="stagger">
+      @for (c of caps; track c.id) {
+        <article
+          class="cap card spotlight"
+          [class]="'size-' + c.size + ' cap-' + c.id"
+          [class.is-open]="open() === c.id"
+          appTilt="5"
+          tabindex="0"
+          role="button"
+          [attr.aria-expanded]="open() === c.id"
+          [attr.aria-label]="c.title + ': ver prueba real'"
+          (click)="toggle(c.id)"
+          (keydown.enter)="toggle(c.id)"
+          (keydown.space)="$event.preventDefault(); toggle(c.id)"
+          data-cursor="ver prueba"
+        >
+          <span class="cap-glyph" aria-hidden="true">{{ c.icon }}</span>
+
+          @if (c.id === 'fullstack') {
+            <div class="mini-browser" aria-hidden="true">
+              <div class="mb-bar"><i></i><i></i><i></i><span class="mono">bienestar.app/agendas</span></div>
+              <div class="mb-body">
+                <div class="mb-side"><b></b><b></b><b></b><b></b></div>
+                <div class="mb-main">
+                  <div class="mb-row"><span></span><em>pagado</em></div>
+                  <div class="mb-row"><span></span><em class="warn">pendiente</em></div>
+                  <div class="mb-row"><span></span><em>pagado</em></div>
+                  <div class="mb-chart"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <div class="cap-face cap-front">
+            <span class="cap-icon" aria-hidden="true">{{ c.icon }}</span>
+            <h3>{{ c.title }}</h3>
+            <p>{{ c.pitch }}</p>
+            <ul class="tags">
+              @for (t of c.tags; track t) {
+                <li class="chip">{{ t }}</li>
+              }
+            </ul>
+            <span class="cap-more mono">ver prueba real →</span>
+          </div>
+
+          <div class="cap-face cap-proof" [attr.aria-hidden]="open() !== c.id">
+            <span class="proof-label mono">✓ Prueba real · {{ c.proofSource }}</span>
+            <p>{{ c.proof }}</p>
+            <span class="cap-more mono">← volver</span>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

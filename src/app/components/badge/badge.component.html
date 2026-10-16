@@ -1,0 +1,168 @@
+<section id="fotocheck" class="section badge-section">
+  <div class="wrap badge-grid">
+    <div class="badge-head">
+      <p class="eyebrow" appReveal="fade">01 · <b>Fotocheck</b></p>
+      <h2 class="section-title" appSplit>Así me vería en <em>tu empresa</em></h2>
+      <p class="section-lead" appReveal>
+        Escribe el nombre de tu empresa, elige el puesto y el color de tu marca. Arrastra el fotocheck, lánzalo o tócalo para darle la vuelta.
+      </p>
+    </div>
+
+    <div class="badge-controls">
+      <form class="badge-form" (submit)="$event.preventDefault()" appReveal="stagger">
+        <label class="field">
+          <span class="field-label mono">Empresa</span>
+          <input
+            #co
+            type="text"
+            [value]="company()"
+            (input)="setCompany(co.value)"
+            placeholder="Escribe el nombre de tu empresa"
+            maxlength="26"
+            autocomplete="organization"
+            enterkeyhint="done"
+          />
+          <span class="field-count mono">{{ company().length }}/26</span>
+        </label>
+
+        <fieldset class="field">
+          <legend class="field-label mono">Puesto</legend>
+          <div class="roles">
+            @for (r of roles; track r) {
+              <button type="button" class="role-chip" [class.active]="role() === r" [attr.aria-pressed]="role() === r" (click)="setRole(r)">{{ r }}</button>
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend class="field-label mono">Color de tu marca</legend>
+          <div class="swatches">
+            @for (c of swatches; track c) {
+              <button
+                type="button"
+                class="swatch"
+                [style.background]="c"
+                [class.active]="color() === c"
+                [attr.aria-pressed]="color() === c"
+                [attr.aria-label]="'Color ' + c"
+                (click)="setColor(c)"
+              ></button>
+            }
+            <label class="swatch custom" [style.background]="swatches.includes(color()) ? null : color()" [class.active]="!swatches.includes(color())">
+              <input #ci type="color" [value]="color()" (input)="setColor(ci.value)" aria-label="Elegir otro color" />
+              <span aria-hidden="true">+</span>
+            </label>
+          </div>
+        </fieldset>
+      </form>
+
+      <div class="badge-actions" appReveal>
+        <button type="button" class="btn primary" appMagnetic (click)="hire($event)">
+          {{ hired() ? '¡Contratado!' : 'Contratar a Edery' }} <span aria-hidden="true">✓</span>
+        </button>
+        <button type="button" class="btn" (click)="flip()">Voltear <span aria-hidden="true">↻</span></button>
+        <button type="button" class="btn ghost" (click)="share()">Compartir <span aria-hidden="true">⧉</span></button>
+      </div>
+
+      @if (hired()) {
+        <div class="hired-panel" role="status">
+          <p><b>¡Gracias, {{ displayCompany() }}!</b> Hablemos del puesto de {{ role() }}:</p>
+          <div class="hired-actions">
+            <a class="btn primary" [href]="mailto()">Escribirme un correo ✉</a>
+            <a class="btn" [href]="whatsapp()" target="_blank" rel="noopener">WhatsApp ↗</a>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="lanyard-stage" #stage [style.--brand]="color()" [style.--on-brand]="onColor()">
+      <app-avatar class="stage-avatar" [pose]="hired() ? 'celebrate' : 'pointing'" />
+
+      <svg class="strap" aria-hidden="true">
+        <path #strapPath id="strap-path" class="strap-band" d="" />
+        <text class="strap-text" dy="4">
+          <textPath href="#strap-path" startOffset="0">{{ strapText() }}</textPath>
+        </text>
+      </svg>
+
+      <div
+        class="card3d"
+        #card
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="'Fotocheck de Edery Abanto en ' + displayCompany() + '. Presiona Enter para voltearlo.'"
+        (keydown)="onCardKey($event)"
+        data-cursor="arrastra"
+      >
+        <div class="clip" aria-hidden="true"><span></span></div>
+
+        <div class="face front">
+          <div class="band">
+            <span class="logo">{{ initials() }}</span>
+            <span class="company">{{ displayCompany() }}</span>
+          </div>
+          <span class="slot" aria-hidden="true"></span>
+
+          <div class="photo-wrap">
+            @if (photo(); as src) {
+              <img [src]="src" (error)="photoFallback()" alt="" draggable="false" />
+            } @else {
+              <span class="photo-initials" aria-hidden="true">EA</span>
+            }
+          </div>
+
+          <p class="who">
+            <b>EDERY</b>
+            <span>ABANTO</span>
+          </p>
+          <p class="role">{{ role() }}</p>
+
+          <dl class="meta mono">
+            <div><dt>ID</dt><dd>{{ badgeId() }}</dd></div>
+            <div><dt>Desde</dt><dd>{{ since }}</dd></div>
+          </dl>
+
+          <svg class="barcode" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
+            @for (b of bars(); track $index) {
+              <rect [attr.x]="b.x" y="0" [attr.width]="b.w" height="24" />
+            }
+          </svg>
+
+          @if (hired()) {
+            <div class="stamp" aria-hidden="true">
+              <b>CONTRATADO</b>
+              <span>{{ displayCompany() }}</span>
+            </div>
+          }
+          <div class="sheen" aria-hidden="true"></div>
+        </div>
+
+        <div class="face back">
+          <span class="slot" aria-hidden="true"></span>
+          <p class="back-title mono">Si encuentras este fotocheck, devuélvelo a:</p>
+          <p class="back-name">Edery Abanto</p>
+          <p class="back-mail mono">{{ profile.email }}</p>
+
+          <div class="qr">
+            <svg [attr.viewBox]="'-2 -2 ' + (qr().size + 4) + ' ' + (qr().size + 4)" shape-rendering="crispEdges" aria-hidden="true">
+              <rect x="-2" y="-2" [attr.width]="qr().size + 4" [attr.height]="qr().size + 4" fill="#fff" />
+              <path [attr.d]="qr().d" fill="#0A0C10" />
+            </svg>
+            <span class="mono">Escanéame: abre este fotocheck en tu celular</span>
+          </div>
+
+          <ul class="back-skills">
+            <li>Full Stack</li>
+            <li>Automatización</li>
+            <li>IA aplicada</li>
+            <li>QA</li>
+          </ul>
+          <div class="back-band mono">{{ displayCompany() }} · {{ badgeId() }}</div>
+          <div class="sheen" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <p class="stage-hint mono" aria-hidden="true">arrastra · lanza · toca para voltear</p>
+    </div>
+  </div>
+</section>

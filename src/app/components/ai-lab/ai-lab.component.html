@@ -1,0 +1,89 @@
+<section id="ia" class="section ai">
+  <div class="ai-glow" aria-hidden="true"></div>
+
+  <div class="wrap ai-grid">
+    <div class="ai-copy">
+      <p class="eyebrow" appReveal="fade">03 · <b>Inteligencia artificial</b></p>
+      <h2 class="section-title" appSplit>Mi pasión: <em>construir con IA</em></h2>
+      <p class="section-lead" appReveal>
+        Trabajo a diario con agentes de código como <b>Claude Code</b> y <b>Codex</b>. Los uso para planificar, implementar y probar más rápido,
+        sin soltar el control: entiendo y reviso cada cambio antes de entregarlo.
+      </p>
+
+      <ol class="principles" appReveal="stagger">
+        @for (p of principles; track p.n) {
+          <li>
+            <span class="n mono">{{ p.n }}</span>
+            <div>
+              <h3>{{ p.title }}</h3>
+              <p>{{ p.text }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <div class="ai-visual">
+      <div class="terminal" #terminal appReveal="right">
+        <div class="term-head">
+          <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="agent-tabs" role="tablist" aria-label="Agente">
+            <button type="button" role="tab" [attr.aria-selected]="agent() === 'claude'" [class.active]="agent() === 'claude'" (click)="pickAgent('claude')">
+              <span class="ico claude" aria-hidden="true">✻</span> Claude Code
+            </button>
+            <button type="button" role="tab" [attr.aria-selected]="agent() === 'codex'" [class.active]="agent() === 'codex'" (click)="pickAgent('codex')">
+              <span class="ico codex" aria-hidden="true">◎</span> Codex
+            </button>
+          </div>
+        </div>
+
+        <div class="scenarios" role="group" aria-label="Tarea de ejemplo">
+          @for (s of scenarios; track s.id) {
+            <button type="button" class="sc" [class.active]="scenario() === s.id" [attr.aria-pressed]="scenario() === s.id" (click)="pickScenario(s.id)">
+              {{ s.label }}
+            </button>
+          }
+        </div>
+
+        <div class="term-body mono" #body data-lenis-prevent aria-live="polite">
+          @for (l of lines(); track $index) {
+            <div class="tl" [class]="'k-' + l.k">
+              @if (l.k === 'prompt') {
+                <span class="ps">~/proyectos $ </span>
+              } @else if (l.k === 'user') {
+                <span class="ps">&gt; </span>
+              }
+              <span>{{ l.t }}</span>
+              @if (l.typing) {
+                <span class="caret"></span>
+              }
+            </div>
+          }
+          @if (!running()) {
+            <div class="tl k-dim"><span class="ps">~/proyectos $ </span><span class="caret"></span></div>
+          }
+        </div>
+
+        <div class="term-foot">
+          <span class="mono">Demo ilustrativa · así trabajo con agentes</span>
+          <button type="button" class="replay mono" (click)="play()" [disabled]="running()">↻ repetir</button>
+        </div>
+      </div>
+
+      <app-avatar class="ai-avatar" pose="coding" />
+    </div>
+  </div>
+
+  <div class="toolkit" aria-label="Herramientas de IA">
+    <div class="toolkit-track">
+      @for (round of [0, 1]; track round) {
+        <div class="toolkit-set" [attr.aria-hidden]="round === 1">
+          @for (t of toolkit; track t) {
+            <span>{{ t }}</span>
+            <span class="star" aria-hidden="true">✦</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>
