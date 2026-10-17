@@ -3,6 +3,7 @@ import { AvatarComponent } from '../avatar/avatar.component';
 import { MagneticDirective, RevealDirective, SplitDirective } from '../../directives/motion.directives';
 import { FeedbackService } from '../../services/feedback.service';
 import { MotionService } from '../../services/motion.service';
+import { ModeService } from '../../services/mode.service';
 import { PROFILE } from '../../data/profile.data';
 
 @Component({
@@ -15,6 +16,7 @@ import { PROFILE } from '../../data/profile.data';
 export class ContactComponent {
   private feedback = inject(FeedbackService);
   private motion = inject(MotionService);
+  readonly mode = inject(ModeService);
   readonly profile = PROFILE;
   readonly year = new Date().getFullYear();
 

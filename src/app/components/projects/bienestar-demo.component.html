@@ -2,15 +2,15 @@
   @for (m of modules; track m.id) {
     <button type="button" role="tab" class="tab" [class.active]="active() === m.id" [attr.aria-selected]="active() === m.id" (click)="pick(m.id)">
       <span class="status-dot" [class.dev]="m.status === 'en desarrollo'" aria-hidden="true"></span>
-      <span class="mono">{{ m.name }}</span>
+      <span [class.mono]="!mode.simple()">{{ mode.simple() ? m.simpleName : m.name }}</span>
     </button>
   }
 </div>
 
 <div class="panel" role="tabpanel">
   <div class="panel-info">
-    <span class="state mono" [class.dev]="current().status === 'en desarrollo'">● {{ current().status }}</span>
-    <p>{{ current().desc }}</p>
+    <span class="state mono" [class.dev]="current().status === 'en desarrollo'">● {{ mode.simple() ? (current().status === 'producción' ? 'en uso' : 'en construcción') : current().status }}</span>
+    <p>{{ mode.simple() ? current().simpleDesc : current().desc }}</p>
   </div>
 
   @switch (active()) {
@@ -133,5 +133,5 @@
     }
   }
 
-  <p class="footnote mono">Datos de ejemplo · la versión real maneja información privada de la clínica.</p>
+  <p class="footnote mono">Datos de ejemplo: la versión real maneja información privada de la clínica.</p>
 </div>

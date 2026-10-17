@@ -90,10 +90,62 @@ export const SCRIPTS: Record<Agent, Record<Scenario, ScriptLine[]>> = {
 };
 
 export const PRINCIPLES = [
-  { n: '01', title: 'Contexto primero', text: 'Antes de pedir código, le explico al agente el negocio, el proceso y la estructura del proyecto.' },
-  { n: '02', title: 'Plan antes que código', text: 'Reviso el plan paso a paso. Si no lo entiendo, no lo ejecuto.' },
-  { n: '03', title: 'Verifico todo', text: 'Tests, revisión del diff y prueba manual antes de cada commit.' },
-  { n: '04', title: 'La IA acelera, el criterio es mío', text: 'Respondo por cada línea que entrego, la haya escrito yo o un agente.' },
+  {
+    n: '01',
+    title: 'Contexto primero',
+    text: 'Antes de pedir código, le explico al agente el negocio, el proceso y la estructura del proyecto.',
+    simpleTitle: 'Primero entiendo tu negocio',
+    simpleText: 'Antes de construir nada, escucho cómo trabajas y qué te quita tiempo.',
+  },
+  {
+    n: '02',
+    title: 'Plan antes que código',
+    text: 'Reviso el plan paso a paso. Si no lo entiendo, no lo ejecuto.',
+    simpleTitle: 'Planifico antes de construir',
+    simpleText: 'Defino paso a paso qué se va a hacer, para que no haya sorpresas.',
+  },
+  {
+    n: '03',
+    title: 'Verifico todo',
+    text: 'Tests, revisión del diff y prueba manual antes de cada commit.',
+    simpleTitle: 'Pruebo todo',
+    simpleText: 'Reviso que cada cosa funcione bien antes de entregártela.',
+  },
+  {
+    n: '04',
+    title: 'La IA acelera, el criterio es mío',
+    text: 'Respondo por cada línea que entrego, la haya escrito yo o un agente.',
+    simpleTitle: 'La IA ayuda, la responsabilidad es mía',
+    simpleText: 'Respondo por todo lo que entrego, de principio a fin.',
+  },
 ];
+
+/** Versión simple: un pedido real de negocio y cómo lo resuelvo con ayuda de IA. */
+export const SIMPLE_REQUESTS = [
+  {
+    label: 'Resumen de ventas',
+    text: 'Quiero recibir cada mañana un resumen de las ventas de ayer.',
+    result: '📊 Resumen de ventas: llega a tu correo cada día a las 8:00 a. m.',
+  },
+  {
+    label: 'Recordatorios de citas',
+    text: 'Necesito que mis clientes reciban un recordatorio un día antes de su cita.',
+    result: '📅 Recordatorios automáticos: se envían solos un día antes.',
+  },
+  {
+    label: 'Ordenar mis Excel',
+    text: 'Tengo muchos Excel desordenados y pierdo horas juntándolos.',
+    result: '📁 Un solo reporte ordenado, con un clic.',
+  },
+];
+
+export const SIMPLE_STEPS = [
+  { icon: '👂', title: 'Entiendo lo que necesitas', text: 'Me cuentas cómo trabajas hoy.' },
+  { icon: '✦', title: 'Lo construyo con ayuda de IA', text: 'La IA me ayuda a avanzar mucho más rápido.' },
+  { icon: '🔍', title: 'Lo pruebo a fondo', text: 'Reviso que funcione en todos los casos.' },
+  { icon: '🚀', title: 'Te lo entrego funcionando', text: 'Listo para usar desde el primer día.' },
+];
+
+export const AI_TOOLKIT_SIMPLE = ['Inteligencia artificial', 'Chatbots', 'Automatización', 'Asistentes de IA', 'Reportes automáticos', 'Apps para celular', 'Análisis de datos'];
 
 export const AI_TOOLKIT = ['Claude Code', 'Codex', 'ChatGPT', 'APIs de IA', 'Agentes de código', 'Prompt engineering', 'NLP / Chatbots', 'TensorFlow', 'Machine Learning'];

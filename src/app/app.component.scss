@@ -41,7 +41,7 @@
   font-size: 14px;
   font-weight: 600;
   box-shadow: var(--shadow);
-  animation: toast-in 0.45s var(--ease-spring) both, toast-out 0.4s ease-in 2.2s forwards;
+  animation: toast-in 0.45s var(--ease-spring) both, toast-out 0.4s ease-in var(--out, 2.2s) forwards;
 }
 
 .t-ico { font-size: 16px; }

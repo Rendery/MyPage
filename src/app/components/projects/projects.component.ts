@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, inject, signal, viewChild } from '@angular/core';
 import { BienestarDemoComponent } from './bienestar-demo.component';
 import { RevealDirective, SplitDirective, TiltDirective } from '../../directives/motion.directives';
+import { ModeService } from '../../services/mode.service';
 import { PROJECTS } from '../../data/profile.data';
 
 @Component({
@@ -11,6 +12,7 @@ import { PROJECTS } from '../../data/profile.data';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectsComponent {
+  readonly mode = inject(ModeService);
   readonly projects = PROJECTS;
   readonly atStart = signal(true);
   readonly atEnd = signal(false);

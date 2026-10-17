@@ -1,15 +1,12 @@
 import { ChangeDetectionStrategy, Component, ElementRef, NgZone, afterNextRender, inject, signal, viewChild } from '@angular/core';
 import { gsap } from 'gsap';
 import { MotionService } from '../../services/motion.service';
+import { ModeService } from '../../services/mode.service';
 
-const LINES = [
-  '> npx edery@latest',
-  '✓ cargando experiencia.ts',
-  '✓ compilando café → código',
-  '✓ conectando Claude Code + Codex',
-  '✓ imprimiendo tu fotocheck',
-  '✦ listo',
-];
+const LINES = {
+  tecnico: ['> npx edery@latest', '✓ cargando experiencia.ts', '✓ compilando café → código', '✓ conectando Claude Code + Codex', '✓ imprimiendo tu fotocheck', '✦ listo'],
+  simple: ['> ¡Hola! Soy Edery 👋', '✓ preparando mi experiencia', '✓ cargando proyectos reales', '✓ conectando la inteligencia artificial', '✓ imprimiendo tu fotocheck', '✦ listo'],
+};
 
 /** Intro tipo terminal. Solo aparece en la primera visita de la sesión. */
 @Component({
@@ -37,6 +34,7 @@ const LINES = [
 export class LoaderComponent {
   private motion = inject(MotionService);
   private zone = inject(NgZone);
+  private mode = inject(ModeService);
 
   readonly show = signal(true);
   readonly lines = signal<string[]>([]);
@@ -60,15 +58,16 @@ export class LoaderComponent {
         return;
       }
       this.motion.lock(true);
-      LINES.forEach((l, i) => {
+      const lines = LINES[this.mode.mode()];
+      lines.forEach((l, i) => {
         this.timers.push(
           setTimeout(() => {
             this.lines.update((ls) => [...ls, l]);
-            this.progress.set((i + 1) / LINES.length);
+            this.progress.set((i + 1) / lines.length);
           }, 120 + i * 210),
         );
       });
-      this.timers.push(setTimeout(() => this.finish(), 120 + LINES.length * 210 + 250));
+      this.timers.push(setTimeout(() => this.finish(), 120 + lines.length * 210 + 250));
     });
   }
 

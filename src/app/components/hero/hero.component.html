@@ -30,10 +30,10 @@
           <div class="bubble" role="status">{{ text }}</div>
         }
 
-        @for (chip of chips; track chip.label) {
+        @for (chip of chips; track $index) {
           <div class="chip-layer" [attr.data-depth]="chip.d" [style.left.%]="chip.x" [style.top.%]="chip.y">
             <span class="float-chip" [class]="'tone-' + chip.tone" data-cursor="arrastra">
-              <span class="float-inner" [style.animation-delay.s]="$index * -0.7">{{ chip.label }}</span>
+              <span class="float-inner" [style.animation-delay.s]="$index * -0.7">{{ mode.simple() ? chip.simple : chip.tecnico }}</span>
             </span>
           </div>
         }
@@ -42,19 +42,19 @@
         @if (gyroAvailable()) {
           <button type="button" class="gyro-btn" (click)="enableGyro()">Activar movimiento 📱</button>
         } @else {
-          ↑ tócame · arrastra los chips
+          ↑ tócame · arrastra las burbujas
         }
       </p>
     </div>
 
     <div class="h-bottom hero-copy-fade">
       <p class="rotator h-reveal">
-        Construyo software
+        {{ mode.simple() ? profile.simpleLead : 'Construyo software' }}
         <span class="rot-slot">
-          <span class="rot-word" #rot aria-live="polite">{{ profile.roles[roleIndex()] }}</span>
+          <span class="rot-word" #rot aria-live="polite">{{ roles()[roleIndex() % roles().length] }}</span>
         </span>
       </p>
-      <p class="summary h-reveal">{{ profile.summary }}</p>
+      <p class="summary h-reveal">{{ mode.simple() ? profile.simpleSummary : profile.summary }}</p>
 
       <div class="ctas h-reveal">
         <button class="btn primary" type="button" appMagnetic (click)="go('fotocheck')">
@@ -66,10 +66,10 @@
       <dl class="stats h-reveal">
         @for (s of stats; track s.label) {
           <div class="stat">
-            <dt class="sr-only">{{ s.label }}</dt>
+            <dt class="sr-only">{{ mode.simple() ? s.simpleLabel : s.label }}</dt>
             <dd>
               <b><span [appCountUp]="s.value">{{ s.value }}</span>{{ s.suffix }}</b>
-              <span>{{ s.label }}</span>
+              <span>{{ mode.simple() ? s.simpleLabel : s.label }}</span>
             </dd>
           </div>
         }

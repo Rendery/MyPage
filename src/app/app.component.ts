@@ -6,6 +6,7 @@ import { CursorComponent } from './components/shell/cursor.component';
 import { HeroComponent } from './components/hero/hero.component';
 import { BadgeComponent } from './components/badge/badge.component';
 import { ServicesComponent } from './components/services/services.component';
+import { ScenesComponent } from './components/scenes/scenes.component';
 import { AiLabComponent } from './components/ai-lab/ai-lab.component';
 import { ExperienceComponent } from './components/experience/experience.component';
 import { ProjectsComponent } from './components/projects/projects.component';
@@ -15,6 +16,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { MotionService } from './services/motion.service';
 import { FeedbackService } from './services/feedback.service';
 import { ThemeService } from './services/theme.service';
+import { ModeService } from './services/mode.service';
 
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
@@ -28,6 +30,7 @@ const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'Ar
     HeroComponent,
     BadgeComponent,
     ServicesComponent,
+    ScenesComponent,
     AiLabComponent,
     ExperienceComponent,
     ProjectsComponent,
@@ -42,6 +45,7 @@ const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'Ar
 })
 export class AppComponent {
   readonly feedback = inject(FeedbackService);
+  readonly mode = inject(ModeService);
   private theme = inject(ThemeService);
   private konamiIndex = 0;
 

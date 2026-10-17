@@ -129,10 +129,56 @@
 
 .hire { min-height: 42px; padding: 0 18px; font-size: 14px; }
 
+/* --- Interruptor Simple / Técnico --- */
+.mode-toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+
+  button {
+    position: relative;
+    z-index: 1;
+    min-height: 34px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.3s;
+
+    &[aria-pressed='true'] { color: var(--on-lime); }
+  }
+
+  &.hint { animation: hint-pulse 1.2s ease-in-out 4; }
+}
+
+.mt-pill {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: var(--lime);
+  transition: translate 0.45s var(--ease-spring);
+
+  .tech & { translate: 100% 0; }
+}
+
+@keyframes hint-pulse {
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--lime) 30%, transparent); }
+}
+
 /* --- Dock móvil --- */
 .dock { display: none; }
 
-@media (max-width: 1080px) {
+@media (max-width: 1200px) {
   .links { display: none; }
 }
 
@@ -143,7 +189,8 @@
     padding: 0 6px 0 10px;
   }
   .hire { display: none; }
-  .cmd span { font-size: 11px; }
+  .cmd { display: none; }
+  .mode-toggle button { min-height: 32px; padding: 0 11px; font-size: 12px; }
   .logo-text { display: none; }
 
   .dock {

@@ -4,6 +4,22 @@ Portafolio y CV web en una sola página: personaje 2.5D de cuerpo completo, foto
 
 Hecho con **Angular 19** (signals, componentes standalone), **GSAP** (ScrollTrigger, SplitText, Flip, Draggable) y **Lenis** para el scroll suave.
 
+## Dos versiones: simple y técnica
+
+La web tiene un interruptor **Simple / Técnico** en la barra superior.
+
+- **Simple** (por defecto): sin palabras técnicas, con escenas animadas de lo que puedo hacer por un negocio (bots, apps, automatización y el caso real de boletas). Pensada para RR. HH., dueños de negocio o cualquier persona.
+- **Técnico**: stack, terminal con Claude Code / Codex, tecnologías por proyecto e IDs de certificados.
+
+Se puede enviar el enlace directo a cada versión:
+
+```
+https://TU-DOMINIO/?modo=simple
+https://TU-DOMINIO/?modo=tecnico
+```
+
+La elección se recuerda en el navegador del visitante. Los textos simples están junto a los técnicos en `src/app/data/profile.data.ts` (campos `simple…`).
+
 ## Desarrollo
 
 ```bash

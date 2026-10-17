@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FeedbackService } from '../../services/feedback.service';
+import { ModeService } from '../../services/mode.service';
 import { BIENESTAR_MODULES, BienestarModule } from '../../data/profile.data';
 
 interface Cita {
@@ -38,6 +39,7 @@ const CAJA: Record<Periodo, { id: string; label: string; value: number; color: s
 })
 export class BienestarDemoComponent {
   private feedback = inject(FeedbackService);
+  readonly mode = inject(ModeService);
   readonly modules = BIENESTAR_MODULES;
   readonly active = signal<BienestarModule['id']>('sunat');
   readonly current = computed(() => this.modules.find((m) => m.id === this.active())!);

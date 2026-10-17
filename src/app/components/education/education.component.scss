@@ -124,7 +124,8 @@ $org-colors: var(--lime), var(--cyan), var(--violet), var(--orange), var(--pink)
 
 @for $i from 1 through 10 {
   .bar span:nth-child(#{$i}),
-  .org-chips button:nth-child(#{$i}) i { background: list.nth($org-colors, $i); }
+  .org-chips button:nth-child(#{$i}) i,
+  .org-chips .org-static:nth-child(#{$i}) i { background: list.nth($org-colors, $i); }
 }
 
 .org-chips {
@@ -150,6 +151,29 @@ $org-colors: var(--lime), var(--cyan), var(--violet), var(--orange), var(--pink)
     &:hover { border-color: var(--line-strong); }
     &.active { border-color: var(--text); background: var(--surface-2); }
   }
+}
+
+.org-static {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 12.5px;
+
+  i { width: 8px; height: 8px; border-radius: 2px; }
+  sup { font-family: var(--font-mono); font-size: 10px; opacity: 0.6; }
+}
+
+.simple-certs {
+  margin-top: 28px;
+  max-width: 720px;
+  font-size: 17px;
+  color: var(--muted);
+
+  b { color: var(--text); }
 }
 
 .search {

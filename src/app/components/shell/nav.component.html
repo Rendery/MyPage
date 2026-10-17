@@ -15,6 +15,11 @@
   </nav>
 
   <div class="actions">
+    <div class="mode-toggle" role="group" aria-label="Versión de la página" [class.tech]="!mode.simple()" [class.hint]="hint()">
+      <span class="mt-pill" aria-hidden="true"></span>
+      <button type="button" [attr.aria-pressed]="mode.simple()" (click)="setMode('simple')" data-cursor="sin tecnicismos">Simple</button>
+      <button type="button" [attr.aria-pressed]="!mode.simple()" (click)="setMode('tecnico')" data-cursor="detalle técnico">Técnico</button>
+    </div>
     <button type="button" class="icon-btn cmd" (click)="ui.openPalette()" aria-label="Abrir paleta de comandos" data-cursor="comandos">
       <span class="mono">{{ isMac ? '⌘' : 'Ctrl' }} K</span>
     </button>

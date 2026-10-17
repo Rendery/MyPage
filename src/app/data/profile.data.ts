@@ -18,6 +18,11 @@ export const PROFILE = {
   summary:
     'Estudiante de último ciclo de Ingeniería de Software en la UPC. Desarrollo soluciones web y automatizaciones que resuelven procesos reales de negocio de punta a punta: desde el levantamiento del proceso hasta el despliegue en producción.',
   roles: ['que resuelve procesos reales.', 'potenciado con IA.', 'full stack, de punta a punta.', 'que automatiza lo repetitivo.', 'que la gente usa a diario.'],
+  // Versión simple (sin tecnicismos), la que ve por defecto cualquier visitante.
+  simpleLead: 'Creo herramientas digitales',
+  simpleSummary:
+    'Estoy en el último ciclo de Ingeniería de Software. Ayudo a negocios y empresas a trabajar mejor con tecnología: bots que atienden a sus clientes, apps para celular y sistemas que hacen solas las tareas repetitivas.',
+  simpleRoles: ['que ahorran horas de trabajo.', 'que atienden a tus clientes.', 'que funcionan en tu celular.', 'que ordenan tu negocio.', 'con inteligencia artificial.'],
   languages: [
     { name: 'Español', level: 'Nativo' },
     { name: 'Inglés', level: 'Intermedio (B1) · ICPNA' },
@@ -25,10 +30,10 @@ export const PROFILE = {
 };
 
 export const STATS = [
-  { value: 3, suffix: '', label: 'empresas donde aporté' },
-  { value: 4, suffix: '', label: 'módulos internos creados en Bienestar' },
-  { value: 29, suffix: '', label: 'certificaciones' },
-  { value: 10, suffix: '.º', label: 'ciclo en la UPC' },
+  { value: 3, suffix: '', label: 'empresas donde aporté', simpleLabel: 'empresas donde trabajé' },
+  { value: 4, suffix: '', label: 'módulos internos creados en Bienestar', simpleLabel: 'herramientas creadas para un negocio real' },
+  { value: 29, suffix: '', label: 'certificaciones', simpleLabel: 'certificaciones' },
+  { value: 10, suffix: '.º', label: 'ciclo en la UPC', simpleLabel: 'ciclo de Ingeniería de Software' },
 ];
 
 export interface Capability {
@@ -117,6 +122,9 @@ export interface Job {
   bullets: string[];
   tags: string[];
   previousRole?: { role: string; period: string };
+  simpleRole: string;
+  simpleSummary: string;
+  simpleBullets: string[];
 }
 
 // Orden: del más reciente al más antiguo.
@@ -139,6 +147,15 @@ export const JOBS: Job[] = [
     ],
     tags: ['Python', 'Playwright', 'JavaScript', 'PostgreSQL', 'Railway', 'Cloudflare R2'],
     previousRole: { role: 'Asistente de Atención al Cliente y Soporte Tecnológico', period: 'feb. 2026 – mar. 2026' },
+    simpleRole: 'Desarrollador y consultor de tecnología',
+    simpleSummary:
+      'Soy la persona de tecnología de una clínica psicológica en Miraflores, que no tenía área de sistemas. Convertí sus tareas manuales en herramientas que funcionan solas.',
+    simpleBullets: [
+      'Las boletas y facturas ahora salen solas con el DNI y el monto.',
+      'La agenda de los terapeutas y los pagos pendientes se ordenan automáticamente.',
+      'Cada día se preparan solos los mensajes de recordatorio para WhatsApp.',
+      'También resuelvo lo del día a día: computadoras, impresoras y consultas de tecnología.',
+    ],
   },
   {
     company: 'Limtek',
@@ -156,6 +173,14 @@ export const JOBS: Job[] = [
       'Implementé soluciones conectadas a bases de datos relacionales con integridad de la información.',
     ],
     tags: ['Python', 'Flask', 'Power Automate', 'SharePoint', 'SQL'],
+    simpleRole: 'Practicante de desarrollo y automatización',
+    simpleSummary: 'Creé programas para que el equipo cometiera menos errores al digitar y trabajara más rápido.',
+    simpleBullets: [
+      'Hice herramientas que el equipo usaba a diario.',
+      'Automaticé el envío y el orden de información entre áreas.',
+      'Ayudé a pasar información de sistemas antiguos a otros nuevos.',
+      'Creé un buscador para encontrar resultados de capacitaciones en segundos.',
+    ],
   },
   {
     company: 'NTT DATA Europe & Latam',
@@ -171,6 +196,12 @@ export const JOBS: Job[] = [
       'Automaticé tareas repetitivas con Excel avanzado, tablas dinámicas y macros VBA.',
     ],
     tags: ['Excel avanzado', 'VBA', 'JIRA', 'CSV'],
+    simpleRole: 'Soporte de procesos',
+    simpleSummary: 'Revisé y controlé facturas de Pacífico Seguros, cuidando que todo estuviera correcto y a tiempo.',
+    simpleBullets: [
+      'Revisé grandes cantidades de información sin perder ningún plazo.',
+      'Hice que Excel hiciera solo las tareas repetitivas.',
+    ],
   },
 ];
 
@@ -179,6 +210,8 @@ export interface BienestarModule {
   name: string;
   status: 'producción' | 'en desarrollo';
   desc: string;
+  simpleName: string;
+  simpleDesc: string;
 }
 
 export const BIENESTAR_MODULES: BienestarModule[] = [
@@ -187,24 +220,32 @@ export const BIENESTAR_MODULES: BienestarModule[] = [
     name: 'BIENESTAR-SUNAT',
     status: 'producción',
     desc: 'Genera la factura o boleta en PDF a partir del DNI y el monto, lista para enviar al cliente.',
+    simpleName: 'Boletas y facturas',
+    simpleDesc: 'Escribes el DNI y el monto, y la boleta o factura sale lista en PDF para enviar al cliente.',
   },
   {
     id: 'agendas',
     name: 'BIENESTAR-AGENDAS',
     status: 'producción',
     desc: 'Consolida las agendas de los terapeutas, detecta pagos pendientes y arma mensajes listos para WhatsApp.',
+    simpleName: 'Agenda y cobros',
+    simpleDesc: 'Junta las agendas de los terapeutas, avisa quién tiene un pago pendiente y prepara los recordatorios para WhatsApp.',
   },
   {
     id: 'finanzas',
     name: 'BIENESTAR-FINANZAS',
     status: 'producción',
     desc: 'Analiza la caja y la clasifica por efectivo, tarjeta, transferencia y extornos, con consolidados por período.',
+    simpleName: 'Caja del negocio',
+    simpleDesc: 'Ordena el dinero que entra: efectivo, tarjeta, transferencias y devoluciones, sumado por semana o por mes.',
   },
   {
     id: 'informes',
     name: 'BIENESTAR-INFORMES',
     status: 'en desarrollo',
     desc: 'Plataforma para que los terapeutas registren evaluaciones y las conviertan en dashboards e informes exportables.',
+    simpleName: 'Informes de pacientes',
+    simpleDesc: 'Los terapeutas registran sus evaluaciones y obtienen gráficos e informes listos para descargar.',
   },
 ];
 
@@ -217,6 +258,9 @@ export interface Project {
   tags: string[];
   accent: string;
   emoji: string;
+  simpleTitle: string;
+  simpleDesc: string;
+  simpleBullets: string[];
 }
 
 // Orden: del más reciente al más antiguo (el ecosistema Bienestar va destacado aparte).
@@ -230,6 +274,9 @@ export const PROJECTS: Project[] = [
     tags: ['Angular', 'TypeScript', 'GSAP', 'Claude Code'],
     accent: 'var(--lime)',
     emoji: '🪪',
+    simpleTitle: 'Esta misma página',
+    simpleDesc: 'La diseñé y la programé yo, con ayuda de inteligencia artificial.',
+    simpleBullets: ['Tu empresa en mi fotocheck', 'Funciona en celular y computadora', 'Animaciones en toda la página'],
   },
   {
     title: 'Indicadores y gestión documental',
@@ -244,6 +291,9 @@ export const PROJECTS: Project[] = [
     tags: ['Python', 'Flask', 'Power Automate', 'SharePoint', 'REST'],
     accent: 'var(--cyan)',
     emoji: '📊',
+    simpleTitle: 'Buscador de resultados de capacitación',
+    simpleDesc: 'Una página interna para guardar, buscar y compartir resultados de capacitaciones sin revisar archivos uno por uno.',
+    simpleBullets: ['Encuentra resultados en segundos', 'Convierte archivos de Excel a PDF', 'Usa las herramientas que la empresa ya tenía'],
   },
   {
     title: 'Automatización de procesos operativos',
@@ -258,6 +308,9 @@ export const PROJECTS: Project[] = [
     tags: ['Excel avanzado', 'VBA', 'JIRA', 'CSV'],
     accent: 'var(--orange)',
     emoji: '⚙️',
+    simpleTitle: 'Excel que trabaja solo',
+    simpleDesc: 'Herramientas en Excel para ordenar y revisar datos de seguros sin hacerlo a mano.',
+    simpleBullets: ['Menos copiar y pegar', 'Datos revisados automáticamente', 'Reportes más rápidos'],
   },
   {
     title: 'FastGym',
@@ -268,6 +321,9 @@ export const PROJECTS: Project[] = [
     tags: ['Flutter', 'Dart'],
     accent: 'var(--violet)',
     emoji: '🏋️',
+    simpleTitle: 'FastGym',
+    simpleDesc: 'App para celular con productos deportivos y rutinas de ejercicio pensadas para cada persona.',
+    simpleBullets: ['Rutinas personalizadas', 'Recomienda productos', 'Proyecto de la universidad'],
   },
 ];
 

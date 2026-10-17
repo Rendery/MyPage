@@ -8,18 +8,24 @@
 <main>
   <app-hero />
   <app-badge />
-  <app-services />
+  @if (mode.simple()) {
+    <app-scenes />
+  } @else {
+    <app-services />
+  }
   <app-ai-lab />
   <app-experience />
   <app-projects />
-  <app-stack />
+  @if (!mode.simple()) {
+    <app-stack />
+  }
   <app-education />
   <app-contact />
 </main>
 
 <div class="toasts" aria-live="polite">
   @for (t of feedback.toasts(); track t.id) {
-    <div class="toast">
+    <div class="toast" [style.--out]="t.ms - 400 + 'ms'">
       <span class="t-ico" aria-hidden="true">{{ t.icon }}</span>
       <span>{{ t.text }}</span>
     </div>

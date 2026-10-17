@@ -2,23 +2,39 @@
   <div class="wrap">
     <p class="eyebrow" appReveal="fade">05 · <b>Proyectos</b></p>
     <h2 class="section-title" appSplit>Software que <em>se usa de verdad</em></h2>
-    <p class="section-lead" appReveal>Mi proyecto más fuerte: un ecosistema de apps internas que construí solo, sin área de sistemas, y que hoy está en producción. Pruébalo:</p>
+    <p class="section-lead" appReveal>
+      @if (mode.simple()) {
+        Mi proyecto más importante: herramientas que construí solo para una clínica y que hoy están en uso. Pruébalas aquí mismo:
+      } @else {
+        Mi proyecto más fuerte: un ecosistema de apps internas que construí solo, sin área de sistemas, y que hoy está en producción. Pruébalo:
+      }
+    </p>
 
     <article class="featured card" appReveal>
       <header class="feat-head">
         <div>
           <span class="feat-tag mono">★ Destacado · Bienestar · 2026</span>
-          <h3>Ecosistema de apps internas</h3>
-          <p>
-            Levanté los procesos de una empresa de ~15 personas (agenda, caja, facturación e información) y los automaticé con aplicaciones
-            propias: modulares, trazables y fáciles de usar para personas no técnicas.
-          </p>
-        </div>
-        <ul class="stack">
-          @for (t of ['Python', 'HTML / JS', 'PostgreSQL', 'Railway', 'Cloudflare R2', 'Playwright', 'GitHub']; track t) {
-            <li class="chip">{{ t }}</li>
+          @if (mode.simple()) {
+            <h3>Los sistemas de una clínica real</h3>
+            <p>
+              Una clínica de ~15 personas sin área de sistemas. Entendí cómo trabajaban y convertí su agenda, su caja y su facturación en
+              herramientas fáciles de usar, pensadas para personas que no son técnicas.
+            </p>
+          } @else {
+            <h3>Ecosistema de apps internas</h3>
+            <p>
+              Levanté los procesos de una empresa de ~15 personas (agenda, caja, facturación e información) y los automaticé con aplicaciones
+              propias: modulares, trazables y fáciles de usar para personas no técnicas.
+            </p>
           }
-        </ul>
+        </div>
+        @if (!mode.simple()) {
+          <ul class="stack">
+            @for (t of ['Python', 'HTML / JS', 'PostgreSQL', 'Railway', 'Cloudflare R2', 'Playwright', 'GitHub']; track t) {
+              <li class="chip">{{ t }}</li>
+            }
+          </ul>
+        }
       </header>
 
       <app-bienestar-demo />
@@ -39,18 +55,20 @@
             <span class="emoji" aria-hidden="true">{{ p.emoji }}</span>
             <span class="meta mono">{{ p.org }} · {{ p.year }}</span>
           </div>
-          <h4>{{ p.title }}</h4>
-          <p>{{ p.desc }}</p>
+          <h4>{{ mode.simple() ? p.simpleTitle : p.title }}</h4>
+          <p>{{ mode.simple() ? p.simpleDesc : p.desc }}</p>
           <ul class="bul">
-            @for (b of p.bullets; track b) {
+            @for (b of mode.simple() ? p.simpleBullets : p.bullets; track $index) {
               <li>{{ b }}</li>
             }
           </ul>
-          <ul class="tags">
-            @for (t of p.tags; track t) {
-              <li class="chip">{{ t }}</li>
-            }
-          </ul>
+          @if (!mode.simple()) {
+            <ul class="tags">
+              @for (t of p.tags; track t) {
+                <li class="chip">{{ t }}</li>
+              }
+            </ul>
+          }
         </article>
       }
     </div>

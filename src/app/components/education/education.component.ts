@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CountUpDirective, RevealDirective, SplitDirective, TiltDirective } from '../../directives/motion.directives';
 import { FeedbackService } from '../../services/feedback.service';
+import { ModeService } from '../../services/mode.service';
 import { CERTS, EDUCATION, PROFILE } from '../../data/profile.data';
 
 const PAGE = 8;
@@ -14,6 +15,7 @@ const PAGE = 8;
 })
 export class EducationComponent {
   private feedback = inject(FeedbackService);
+  readonly mode = inject(ModeService);
 
   readonly education = EDUCATION;
   readonly languages = PROFILE.languages;

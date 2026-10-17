@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { RevealDirective, SplitDirective, TiltDirective } from '../../directives/motion.directives';
 import { FeedbackService } from '../../services/feedback.service';
 import { MotionService } from '../../services/motion.service';
+import { ModeService } from '../../services/mode.service';
 import { JOBS } from '../../data/profile.data';
 
 @Component({
@@ -14,6 +15,7 @@ import { JOBS } from '../../data/profile.data';
 })
 export class ExperienceComponent {
   private feedback = inject(FeedbackService);
+  readonly mode = inject(ModeService);
   readonly jobs = JOBS;
   /** El trabajo actual empieza abierto. */
   readonly open = signal<Set<number>>(new Set([0]));

@@ -1,6 +1,6 @@
 <section id="formacion" class="section">
   <div class="wrap">
-    <p class="eyebrow" appReveal="fade">07 · <b>Formación</b></p>
+    <p class="eyebrow" appReveal="fade">{{ mode.simple() ? '06' : '07' }} · <b>Formación</b></p>
     <h2 class="section-title" appSplit>Aprendiendo <em>siempre</em></h2>
 
     <div class="edu" appReveal="stagger">
@@ -37,19 +37,30 @@
         <div class="orgbar" role="group" aria-label="Filtrar por institución">
           <div class="bar" aria-hidden="true">
             @for (o of orgs; track o.org; let i = $index) {
-              <span [style.flex-grow]="o.n" [class.dim]="org() && org() !== o.org" [style.--i]="i"></span>
+              <span [style.flex-grow]="o.n" [class.dim]="!mode.simple() && org() && org() !== o.org" [style.--i]="i"></span>
             }
           </div>
           <div class="org-chips">
             @for (o of orgs; track o.org; let i = $index) {
-              <button type="button" [class.active]="org() === o.org" [attr.aria-pressed]="org() === o.org" (click)="pickOrg(o.org)" [style.--i]="i">
-                <i></i>{{ o.org }} <sup>{{ o.n }}</sup>
-              </button>
+              @if (mode.simple()) {
+                <span class="org-static"><i></i>{{ o.org }} <sup>{{ o.n }}</sup></span>
+              } @else {
+                <button type="button" [class.active]="org() === o.org" [attr.aria-pressed]="org() === o.org" (click)="pickOrg(o.org)" [style.--i]="i">
+                  <i></i>{{ o.org }} <sup>{{ o.n }}</sup>
+                </button>
+              }
             }
           </div>
         </div>
       </div>
 
+      @if (mode.simple()) {
+        <p class="simple-certs">
+          Cursos de <b>Google, IBM, la Universidad de Michigan</b> y más, en inteligencia artificial, ciberseguridad, programación y trabajo en
+          equipo. Cada uno tiene un código para verificarlo.
+        </p>
+        <button type="button" class="btn more" (click)="mode.set('tecnico')">Ver el detalle de cada certificado <span aria-hidden="true">→</span></button>
+      } @else {
       <label class="search">
         <span class="sr-only">Buscar certificación</span>
         <span aria-hidden="true">⌕</span>
@@ -76,6 +87,7 @@
         <button type="button" class="btn more" (click)="expanded.set(!expanded())">
           {{ expanded() ? 'Ver menos' : 'Ver las ' + total + ' certificaciones' }}
         </button>
+      }
       }
     </div>
   </div>

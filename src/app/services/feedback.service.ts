@@ -4,6 +4,7 @@ export interface Toast {
   id: number;
   icon: string;
   text: string;
+  ms: number;
 }
 
 const CONFETTI_COLORS = ['#c8f031', '#4de1f0', '#ff6b2c', '#9b8cff', '#ff5c9a', '#ffffff'];
@@ -15,10 +16,10 @@ export class FeedbackService {
   private nextId = 0;
   readonly toasts = signal<Toast[]>([]);
 
-  toast(text: string, icon = '✓'): void {
+  toast(text: string, icon = '✓', ms = 2600): void {
     const id = ++this.nextId;
-    this.toasts.update((list) => [...list.slice(-2), { id, icon, text }]);
-    setTimeout(() => this.toasts.update((list) => list.filter((t) => t.id !== id)), 2600);
+    this.toasts.update((list) => [...list.slice(-2), { id, icon, text, ms }]);
+    setTimeout(() => this.toasts.update((list) => list.filter((t) => t.id !== id)), ms);
   }
 
   haptic(pattern: number | number[] = 12): void {

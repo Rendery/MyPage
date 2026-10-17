@@ -2,7 +2,7 @@
   <div class="wrap">
     <p class="eyebrow" appReveal="fade">04 · <b>Experiencia</b></p>
     <h2 class="section-title" appSplit>Donde ya <em>aporté</em></h2>
-    <p class="section-lead" appReveal>Del más reciente al más antiguo. Abre cada etapa para ver los logros.</p>
+    <p class="section-lead" appReveal>Del más reciente al más antiguo. Abre cada etapa para ver {{ mode.simple() ? 'lo que logré' : 'los logros' }}.</p>
 
     <div class="timeline" #timeline>
       <div class="tl-line" aria-hidden="true"><div class="tl-progress"></div></div>
@@ -23,22 +23,22 @@
             <header>
               <span class="company-badge" aria-hidden="true">{{ job.companyShort.slice(0, 2).toUpperCase() }}</span>
               <div>
-                <h3>{{ job.role }}</h3>
+                <h3>{{ mode.simple() ? job.simpleRole : job.role }}</h3>
                 <p class="company">{{ job.company }} · <span class="muted">{{ job.place }}</span></p>
               </div>
             </header>
 
-            <p class="summary">{{ job.summary }}</p>
+            <p class="summary">{{ mode.simple() ? job.simpleSummary : job.summary }}</p>
 
             <button type="button" class="job-toggle mono" [attr.aria-expanded]="open().has(i)" (click)="toggle(i)">
-              {{ open().has(i) ? 'Ocultar logros' : 'Ver logros (' + job.bullets.length + ')' }}
+              {{ open().has(i) ? 'Ocultar logros' : 'Ver logros (' + (mode.simple() ? job.simpleBullets : job.bullets).length + ')' }}
               <span class="plus" aria-hidden="true"></span>
             </button>
 
             <div class="job-more">
               <div>
                 <ul class="bullets">
-                  @for (b of job.bullets; track b) {
+                  @for (b of mode.simple() ? job.simpleBullets : job.bullets; track $index) {
                     <li>{{ b }}</li>
                   }
                 </ul>
@@ -48,11 +48,13 @@
               </div>
             </div>
 
-            <ul class="tags">
-              @for (t of job.tags; track t) {
-                <li class="chip">{{ t }}</li>
-              }
-            </ul>
+            @if (!mode.simple()) {
+              <ul class="tags">
+                @for (t of job.tags; track t) {
+                  <li class="chip">{{ t }}</li>
+                }
+              </ul>
+            }
           </div>
         </article>
       }

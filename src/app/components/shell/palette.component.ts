@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, injec
 import { FeedbackService } from '../../services/feedback.service';
 import { ThemeService } from '../../services/theme.service';
 import { UiService } from '../../services/ui.service';
+import { ModeService } from '../../services/mode.service';
 import { PROFILE, SECTIONS } from '../../data/profile.data';
 
 interface Command {
@@ -26,6 +27,7 @@ export class PaletteComponent {
   readonly ui = inject(UiService);
   private theme = inject(ThemeService);
   private feedback = inject(FeedbackService);
+  private mode = inject(ModeService);
 
   readonly query = signal('');
   readonly index = signal(0);
@@ -49,6 +51,14 @@ export class PaletteComponent {
         this.ui.go('fotocheck');
         setTimeout(() => document.querySelector<HTMLInputElement>('#fotocheck input[type=text]')?.focus({ preventScroll: true }), 1300);
       },
+    },
+    {
+      id: 'mode',
+      group: 'Acciones',
+      label: 'Cambiar versión: simple / técnica',
+      icon: '⇄',
+      keywords: 'tecnico tecnica simple modo version',
+      run: () => this.mode.toggle(),
     },
     { id: 'theme', group: 'Acciones', label: 'Cambiar tema claro / oscuro', icon: '◐', keywords: 'dark light modo', run: () => this.theme.toggle() },
     { id: 'email', group: 'Acciones', label: 'Copiar mi correo', icon: '⧉', hint: PROFILE.email, keywords: 'email mail', run: () => this.feedback.copy(PROFILE.email, 'Correo') },
@@ -75,8 +85,9 @@ export class PaletteComponent {
       .normalize('NFD')
       .replace(/[̀-ͯ]/g, '')
       .trim();
-    if (!q) return this.commands;
-    return this.commands.filter((c) =>
+    const available = this.commands.filter((c) => !(c.id === 'go-stack' && this.mode.simple()));
+    if (!q) return available;
+    return available.filter((c) =>
       `${c.label} ${c.group} ${c.keywords ?? ''} ${c.hint ?? ''}`
         .toLowerCase()
         .normalize('NFD')
