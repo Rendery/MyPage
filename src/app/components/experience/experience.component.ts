@@ -4,6 +4,7 @@ import { RevealDirective, SplitDirective, TiltDirective } from '../../directives
 import { FeedbackService } from '../../services/feedback.service';
 import { MotionService } from '../../services/motion.service';
 import { ModeService } from '../../services/mode.service';
+import { I18nService } from '../../i18n/i18n.service';
 import { JOBS } from '../../data/profile.data';
 
 @Component({
@@ -16,6 +17,7 @@ import { JOBS } from '../../data/profile.data';
 export class ExperienceComponent {
   private feedback = inject(FeedbackService);
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
   readonly jobs = JOBS;
   /** El trabajo actual empieza abierto. */
   readonly open = signal<Set<number>>(new Set([0]));

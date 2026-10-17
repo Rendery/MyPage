@@ -5,11 +5,10 @@ import { MagneticDirective, RevealDirective, SplitDirective } from '../../direct
 import { FeedbackService } from '../../services/feedback.service';
 import { MotionService } from '../../services/motion.service';
 import { PROFILE } from '../../data/profile.data';
+import { I18nService } from '../../i18n/i18n.service';
 import { LanyardSim } from './lanyard-sim';
 
-const ROLES = ['Practicante de Software', 'Desarrollador Full Stack', 'QA y Automatización', 'Automatización e IA'];
 const SWATCHES = ['#FF6B2C', '#2F6BFF', '#E3262F', '#00A86B', '#7B3FE4', '#111318'];
-const DEFAULT_COMPANY = 'Tu empresa';
 
 function hash(text: string): number {
   let h = 2166136261;
@@ -37,13 +36,15 @@ export class BadgeComponent {
   private zone = inject(NgZone);
   private motion = inject(MotionService);
   private feedback = inject(FeedbackService);
+  readonly i18n = inject(I18nService);
 
   readonly profile = PROFILE;
-  readonly roles = ROLES;
   readonly swatches = SWATCHES;
 
   readonly company = signal('');
-  readonly role = signal(ROLES[1]);
+  /** Índice del puesto (el nombre depende del idioma). */
+  readonly roleIndex = signal(1);
+  readonly role = computed(() => this.i18n.c().ui.badge.roles[this.roleIndex()]);
   readonly color = signal(SWATCHES[0]);
   readonly hired = signal(false);
   /** Foto del fotocheck: primero la versión WebP liviana, luego el PNG original. */
@@ -51,7 +52,7 @@ export class BadgeComponent {
   private readonly photoIndex = signal(0);
   readonly photo = computed(() => this.photoSources[this.photoIndex()] ?? null);
 
-  readonly displayCompany = computed(() => this.company().trim() || DEFAULT_COMPANY);
+  readonly displayCompany = computed(() => this.company().trim() || this.i18n.c().ui.badge.defaultCompany);
   readonly onColor = computed(() => readableOn(this.color()));
   readonly initials = computed(() => {
     const words = this.displayCompany().split(/\s+/).filter(Boolean);
@@ -59,7 +60,7 @@ export class BadgeComponent {
   });
   readonly badgeId = computed(() => `EA-${new Date().getFullYear()}-${String(hash(this.displayCompany()) % 10000).padStart(4, '0')}`);
   readonly bars = computed(() => {
-    let h = hash(this.displayCompany() + this.role());
+    let h = hash(this.displayCompany() + this.roleIndex());
     const bars: { x: number; w: number }[] = [];
     let x = 0;
     while (x < 96) {
@@ -70,14 +71,16 @@ export class BadgeComponent {
     }
     return bars;
   });
-  readonly strapText = computed(() => `${this.displayCompany().toUpperCase()} ✦ EDERY ABANTO ✦ `.repeat(10));
-  readonly since = new Intl.DateTimeFormat('es-PE', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date());
+  // El cordón se redibuja en cada frame de la física: solo el texto que cabe en él (~3 vueltas), no más.
+  readonly strapText = computed(() => `${this.displayCompany().toUpperCase()} ✦ EDERY ABANTO ✦ `.repeat(3));
+  readonly since = computed(() => new Intl.DateTimeFormat(this.i18n.meta().locale, { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date()));
 
   readonly shareUrl = computed(() => {
     const params = new URLSearchParams();
     if (this.company().trim()) params.set('empresa', this.company().trim());
     params.set('color', this.color().replace('#', ''));
-    params.set('rol', String(ROLES.indexOf(this.role())));
+    params.set('rol', String(this.roleIndex()));
+    params.set('lang', this.i18n.lang());
     return `${location.origin}${location.pathname}?${params.toString()}#fotocheck`;
   });
 
@@ -92,12 +95,11 @@ export class BadgeComponent {
   });
 
   readonly mailto = computed(() => {
+    const t = this.i18n.c().ui.badge;
     const c = this.displayCompany();
-    const subject = `Propuesta de ${c} para Edery`;
-    const body = `Hola Edery,\n\nTe escribo de ${c}. Vimos tu fotocheck y nos gustaría conversar contigo sobre el puesto de ${this.role()}.\n\nSaludos,`;
-    return `mailto:${PROFILE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `mailto:${PROFILE.email}?subject=${encodeURIComponent(t.mailSubject(c))}&body=${encodeURIComponent(t.mailBody(c, this.role()))}`;
   });
-  readonly whatsapp = computed(() => `${PROFILE.whatsapp}?text=${encodeURIComponent(`Hola Edery 👋 Te escribo de ${this.displayCompany()}.`)}`);
+  readonly whatsapp = computed(() => `${PROFILE.whatsapp}?text=${encodeURIComponent(this.i18n.c().ui.badge.waText(this.displayCompany()))}`);
 
   private stage = viewChild.required<ElementRef<HTMLElement>>('stage');
   private card = viewChild.required<ElementRef<HTMLElement>>('card');
@@ -121,8 +123,8 @@ export class BadgeComponent {
     this.hired.set(false);
   }
 
-  setRole(role: string): void {
-    this.role.set(role);
+  setRole(index: number): void {
+    this.roleIndex.set(index);
     this.feedback.haptic(8);
     this.kick?.();
   }
@@ -144,7 +146,7 @@ export class BadgeComponent {
     const r = this.card().nativeElement.getBoundingClientRect();
     this.feedback.confetti(r.left + r.width / 2, r.top + r.height / 3);
     this.feedback.haptic([20, 40, 30]);
-    this.feedback.toast(`¡Gracias, ${this.displayCompany()}! Conversemos 🤝`, '🎉');
+    this.feedback.toast(this.i18n.c().ui.badge.toastHired(this.displayCompany()), '🎉');
     if (Math.cos((this.sim.rotY * Math.PI) / 180) < 0) this.sim.flip();
     this.sim.nudge(10);
     this.kick?.();
@@ -156,13 +158,14 @@ export class BadgeComponent {
     const nav = navigator as Navigator & { share?: (d: ShareData) => Promise<void> };
     if (nav.share && !this.motion.finePointer) {
       try {
-        await nav.share({ title: 'Fotocheck de Edery Abanto', text: `Así se vería Edery en ${this.displayCompany()}`, url });
+        const t = this.i18n.c().ui.badge;
+        await nav.share({ title: t.shareTitle, text: t.shareText(this.displayCompany()), url });
         return;
       } catch {
         /* el usuario canceló: se copia el enlace */
       }
     }
-    await this.feedback.copy(url, 'Enlace del fotocheck');
+    await this.feedback.copy(url, this.i18n.c().ui.badge.linkLabel);
   }
 
   onCardKey(e: KeyboardEvent): void {
@@ -186,10 +189,10 @@ export class BadgeComponent {
     const rol = Number(params.get('rol'));
     if (empresa) {
       this.company.set(empresa.slice(0, 26));
-      setTimeout(() => this.feedback.toast(`¡Hola, equipo de ${this.displayCompany()}! 👋`, '🪪'), 2600);
+      setTimeout(() => this.feedback.toast(this.i18n.c().ui.badge.toastHello(this.displayCompany()), '🪪'), 2600);
     }
     if (color && /^[0-9a-f]{6}$/i.test(color)) this.color.set(`#${color}`);
-    if (ROLES[rol]) this.role.set(ROLES[rol]);
+    if (Number.isInteger(rol) && rol >= 0 && rol < 4 && params.has('rol')) this.roleIndex.set(rol);
   }
 
   /** Bucle de físicas: solo corre mientras la sección está visible y la tarjeta se mueve. */

@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { TextPlugin } from 'gsap/TextPlugin';
 import { MagneticDirective, RevealDirective, SplitDirective } from '../../directives/motion.directives';
 import { MotionService } from '../../services/motion.service';
+import { I18nService } from '../../i18n/i18n.service';
 
 gsap.registerPlugin(TextPlugin);
 
@@ -55,44 +56,14 @@ function moveFinger(finger: HTMLElement, target: () => HTMLElement, root: HTMLEl
 export class ScenesComponent {
   private motion = inject(MotionService);
 
+  readonly i18n = inject(I18nService);
+  // Los textos de cada escena están en i18n → scenes.items (y los de cada animación en scenes.bot/app/auto/boleta).
   readonly scenes = [
-    {
-      id: 'bot',
-      icon: '💬',
-      title: 'Bots que atienden a tus clientes',
-      desc: 'Un asistente en WhatsApp o en tu página web que responde preguntas, agenda citas y toma pedidos. Incluso a las 3 de la mañana, cuando nadie está en la oficina.',
-      benefits: ['Responde al instante, a cualquier hora', 'Agenda citas y toma pedidos sin errores', 'Tu equipo deja de responder lo mismo todo el día'],
-      note: 'Ideal para clínicas, restaurantes, tiendas y academias.',
-      real: false,
-    },
-    {
-      id: 'app',
-      icon: '📱',
-      title: 'Apps para celular',
-      desc: 'Tu negocio en el bolsillo de tus clientes: una app para Android y iPhone donde ven tus productos, compran, reservan o siguen su pedido.',
-      benefits: ['Tus clientes compran o reservan desde su celular', 'Avisos de ofertas y recordatorios directo al teléfono', 'Una sola app para Android y iPhone'],
-      note: 'Ya hice una: FastGym, app de rutinas y productos deportivos (proyecto de la universidad).',
-      real: false,
-    },
-    {
-      id: 'auto',
-      icon: '⚙️',
-      title: 'Tareas repetitivas que se hacen solas',
-      desc: 'Lo que hoy le toma horas a tu equipo, como copiar datos de un Excel a otro, armar reportes o revisar archivos, lo convierto en algo que se hace con un clic, o incluso solo cada mañana.',
-      benefits: ['Menos errores al digitar', 'Reportes listos cuando llegas a la oficina', 'Tu equipo deja de copiar y pegar'],
-      note: 'Lo hice en Limtek y en Bienestar.',
-      real: false,
-    },
-    {
-      id: 'boleta',
-      icon: '🧾',
-      title: 'Boletas y facturas en segundos',
-      desc: 'En Bienestar, una clínica en Lima, creé un sistema donde solo escribes el DNI y el monto: la boleta o factura sale lista en PDF para enviar al cliente. Hoy está en uso en la clínica.',
-      benefits: ['Sin errores al escribir datos', 'El comprobante sale listo para enviar', 'Más tiempo para atender a los pacientes'],
-      note: '',
-      real: true,
-    },
-  ];
+    { id: 'bot', icon: '💬', real: false },
+    { id: 'app', icon: '📱', real: false },
+    { id: 'auto', icon: '⚙️', real: false },
+    { id: 'boleta', icon: '🧾', real: true },
+  ] as const;
 
   constructor() {
     const host = inject(ElementRef<HTMLElement>).nativeElement as HTMLElement;

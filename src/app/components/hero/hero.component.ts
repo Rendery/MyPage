@@ -7,39 +7,20 @@ import { CountUpDirective, MagneticDirective } from '../../directives/motion.dir
 import { MotionService } from '../../services/motion.service';
 import { FeedbackService } from '../../services/feedback.service';
 import { ModeService } from '../../services/mode.service';
+import { I18nService } from '../../i18n/i18n.service';
 import { PROFILE, STATS } from '../../data/profile.data';
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
 
-const LINES = {
-  tecnico: [
-    '¡Hola! Soy Edery 👋',
-    'Más abajo está mi fotocheck… con el nombre de tu empresa 🪪',
-    'Claude Code y Codex son mis copilotos diarios ✦',
-    'Si una tarea se repite, la automatizo ⟳',
-    'Prueba Ctrl + K: es mi paleta de comandos ⌨️',
-    'Los chips flotantes se pueden arrastrar y lanzar 🚀',
-    'Funciono con café y buenas prácticas ☕',
-  ],
-  simple: [
-    '¡Hola! Soy Edery 👋',
-    'Más abajo está mi fotocheck… con el nombre de tu empresa 🪪',
-    'Si una tarea se repite, la hago automática ⚙️',
-    'Puedo crear un bot que atienda a tus clientes 💬',
-    'Las burbujas flotantes se pueden arrastrar y lanzar 🚀',
-    '¿Eres técnico? Arriba puedes cambiar a la versión técnica ↑',
-    'Funciono con café y muchas ganas de aprender ☕',
-  ],
-};
-
 // Mismas posiciones en ambas versiones; solo cambia el texto (así no se recrean los elementos arrastrables).
+// (los textos de la versión simple están en i18n → ui.hero.chipsSimple, en el mismo orden).
 const CHIP_SLOTS = [
-  { x: 4, y: 18, d: 0.9, tone: 'lime', tecnico: 'Claude Code', simple: '💬 Bots' },
-  { x: 78, y: 10, d: 0.7, tone: 'cyan', tecnico: 'Codex', simple: '📱 Apps' },
-  { x: 84, y: 46, d: 1.1, tone: '', tecnico: 'TypeScript', simple: '✦ IA' },
-  { x: 0, y: 56, d: 0.8, tone: 'orange', tecnico: 'Python', simple: '⚙️ Automatización' },
-  { x: 74, y: 74, d: 1.2, tone: '', tecnico: 'React', simple: '🧾 Facturas' },
-  { x: 8, y: 82, d: 0.6, tone: 'violet', tecnico: 'PostgreSQL', simple: '📊 Reportes' },
+  { x: 4, y: 18, d: 0.9, tone: 'lime', tecnico: 'Claude Code' },
+  { x: 78, y: 10, d: 0.7, tone: 'cyan', tecnico: 'Codex' },
+  { x: 84, y: 46, d: 1.1, tone: '', tecnico: 'TypeScript' },
+  { x: 0, y: 56, d: 0.8, tone: 'orange', tecnico: 'Python' },
+  { x: 74, y: 74, d: 1.2, tone: '', tecnico: 'React' },
+  { x: 8, y: 82, d: 0.6, tone: 'violet', tecnico: 'PostgreSQL' },
 ];
 
 type OrientationPermission = { requestPermission?: () => Promise<'granted' | 'denied'> };
@@ -58,10 +39,11 @@ export class HeroComponent {
   private host = inject(ElementRef<HTMLElement>).nativeElement as HTMLElement;
 
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
   readonly profile = PROFILE;
   readonly stats = STATS;
   readonly chips = CHIP_SLOTS;
-  readonly roles = computed(() => (this.mode.simple() ? PROFILE.simpleRoles : PROFILE.roles));
+  readonly roles = computed(() => (this.mode.simple() ? this.i18n.c().profile.simpleRoles : this.i18n.c().profile.roles));
 
   readonly roleIndex = signal(0);
   readonly bubble = signal<string | null>(null);
@@ -119,7 +101,7 @@ export class HeroComponent {
 
   /** Tocar al personaje: salta y dice algo. */
   poke(): void {
-    const lines = LINES[this.mode.mode()];
+    const lines = this.mode.simple() ? this.i18n.c().ui.hero.linesSimple : this.i18n.c().ui.hero.linesTech;
     this.bubble.set(lines[this.lineIndex % lines.length]);
     this.lineIndex++;
     this.feedback.haptic(10);
@@ -140,7 +122,7 @@ export class HeroComponent {
     try {
       const res = await perm?.requestPermission?.();
       if (res === 'granted') {
-        this.feedback.toast('Inclina tu celular 📱', '✦');
+        this.feedback.toast(this.i18n.c().ui.hero.gyroToast, '✦');
         this.gyroAvailable.set(false);
       }
     } catch {
@@ -190,7 +172,8 @@ export class HeroComponent {
     const ctx = gsap.context(() => {
       const st = { trigger: this.host, start: 'top top', end: 'bottom top', scrub: true };
       gsap.to('.giant-name', { xPercent: -18, ease: 'none', scrollTrigger: st });
-      gsap.to('.scene-inner', { yPercent: 14, scale: 0.92, ease: 'none', scrollTrigger: st });
+      // Solo desplazamiento: escalar en cada frame obligaba a volver a dibujar la foto y las burbujas.
+      gsap.to('.scene-inner', { yPercent: 14, ease: 'none', scrollTrigger: st });
       gsap.to('.hero-copy-fade', { y: -60, opacity: 0.2, ease: 'none', scrollTrigger: st });
     }, this.host);
     return () => ctx.revert();

@@ -1,17 +1,19 @@
+@let c = i18n.c();
+@let t = c.ui.edu;
 <section id="formacion" class="section">
   <div class="wrap">
-    <p class="eyebrow" appReveal="fade">{{ mode.simple() ? '06' : '07' }} · <b>Formación</b></p>
-    <h2 class="section-title" appSplit>Aprendiendo <em>siempre</em></h2>
+    <p class="eyebrow" appReveal="fade">{{ mode.simple() ? '06' : '07' }} · <b>{{ t.eyebrow }}</b></p>
+    <h2 class="section-title" [appSplit]="t.titleA + ' <em>' + t.titleB + '</em>'"></h2>
 
     <div class="edu" appReveal="stagger">
-      @for (e of education; track e.title; let first = $first) {
+      @for (e of c.education; track $index; let first = $first) {
         <article class="edu-card card spotlight" appTilt="4" [class.main]="first">
           @if (first) {
             <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
               <circle cx="60" cy="60" r="52" class="track" />
               <circle cx="60" cy="60" r="52" class="fill" pathLength="1" />
             </svg>
-            <div class="ring-label" aria-hidden="true"><b>10.º</b><span class="mono">de 10 ciclos</span></div>
+            <div class="ring-label" aria-hidden="true"><b>{{ t.ringA }}</b><span class="mono">{{ t.ringB }}</span></div>
           }
           <span class="period mono">{{ e.period }}</span>
           <h3>{{ e.title }}</h3>
@@ -20,8 +22,8 @@
         </article>
       }
       <article class="edu-card card langs">
-        <span class="period mono">Idiomas</span>
-        @for (l of languages; track l.name) {
+        <span class="period mono">{{ t.langs }}</span>
+        @for (l of c.profile.languages; track $index) {
           <p class="lang"><b>{{ l.name }}</b> <span>{{ l.level }}</span></p>
         }
       </article>
@@ -31,10 +33,10 @@
       <div class="certs-head" appReveal>
         <div class="big">
           <b><span [appCountUp]="total">{{ total }}</span></b>
-          <span>certificaciones<br />verificables</span>
+          <span>{{ t.certsA }}<br />{{ t.certsB }}</span>
         </div>
 
-        <div class="orgbar" role="group" aria-label="Filtrar por institución">
+        <div class="orgbar" role="group" [attr.aria-label]="t.orgAria">
           <div class="bar" aria-hidden="true">
             @for (o of orgs; track o.org; let i = $index) {
               <span [style.flex-grow]="o.n" [class.dim]="!mode.simple() && org() && org() !== o.org" [style.--i]="i"></span>
@@ -55,39 +57,36 @@
       </div>
 
       @if (mode.simple()) {
-        <p class="simple-certs">
-          Cursos de <b>Google, IBM, la Universidad de Michigan</b> y más, en inteligencia artificial, ciberseguridad, programación y trabajo en
-          equipo. Cada uno tiene un código para verificarlo.
-        </p>
-        <button type="button" class="btn more" (click)="mode.set('tecnico')">Ver el detalle de cada certificado <span aria-hidden="true">→</span></button>
+        <p class="simple-certs" [innerHTML]="t.simpleText"></p>
+        <button type="button" class="btn more" (click)="mode.set('tecnico')">{{ t.simpleBtn }} <span aria-hidden="true">→</span></button>
       } @else {
-      <label class="search">
-        <span class="sr-only">Buscar certificación</span>
-        <span aria-hidden="true">⌕</span>
-        <input #q type="search" placeholder="Busca: Python, Scrum, ciberseguridad, machine learning…" [value]="query()" (input)="query.set(q.value)" />
-      </label>
+        <label class="search">
+          <span class="sr-only">{{ t.searchLabel }}</span>
+          <span aria-hidden="true">⌕</span>
+          <input #q type="search" [placeholder]="t.searchPh" [value]="query()" (input)="query.set(q.value)" />
+        </label>
 
-      <ul class="cert-list">
-        @for (c of shown(); track c.id) {
-          <li class="cert">
-            <div>
-              <p class="title">{{ c.title }}</p>
-              <p class="meta mono">{{ c.org }} · {{ c.date }}</p>
-            </div>
-            <button type="button" class="id mono" (click)="copyId(c.id)" [attr.aria-label]="'Copiar ID ' + c.id" data-cursor="copiar">
-              {{ c.id }} <span aria-hidden="true">⧉</span>
-            </button>
-          </li>
-        } @empty {
-          <li class="empty mono">Sin resultados para “{{ query() }}”.</li>
+        <ul class="cert-list">
+          @for (cert of shown(); track cert.id) {
+            <li class="cert">
+              <div>
+                <p class="title">{{ cert.title }}</p>
+                <p class="meta mono">{{ cert.org }} · {{ i18n.month(cert.date) }}</p>
+              </div>
+              <button type="button" class="id mono" (click)="copyId(cert.id)" [attr.aria-label]="t.copyAria(cert.id)" [attr.data-cursor]="t.cursor">
+                {{ cert.id }} <span aria-hidden="true">⧉</span>
+              </button>
+            </li>
+          } @empty {
+            <li class="empty mono">{{ t.empty(query()) }}</li>
+          }
+        </ul>
+
+        @if (!org() && !query()) {
+          <button type="button" class="btn more" (click)="expanded.set(!expanded())">
+            {{ expanded() ? t.less : t.all(total) }}
+          </button>
         }
-      </ul>
-
-      @if (!org() && !query()) {
-        <button type="button" class="btn more" (click)="expanded.set(!expanded())">
-          {{ expanded() ? 'Ver menos' : 'Ver las ' + total + ' certificaciones' }}
-        </button>
-      }
       }
     </div>
   </div>

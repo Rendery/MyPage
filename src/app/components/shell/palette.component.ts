@@ -3,17 +3,26 @@ import { FeedbackService } from '../../services/feedback.service';
 import { ThemeService } from '../../services/theme.service';
 import { UiService } from '../../services/ui.service';
 import { ModeService } from '../../services/mode.service';
+import { I18nService } from '../../i18n/i18n.service';
 import { PROFILE, SECTIONS } from '../../data/profile.data';
+
+type Group = 'go' | 'actions' | 'links';
 
 interface Command {
   id: string;
-  group: 'Ir a' | 'Acciones' | 'Enlaces';
+  group: Group;
   label: string;
   icon: string;
   hint?: string;
   keywords?: string;
   run: () => void;
 }
+
+const plain = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '');
 
 /** Paleta de comandos (Ctrl/⌘ + K) para navegar y ejecutar acciones con el teclado. */
 @Component({
@@ -25,6 +34,7 @@ interface Command {
 })
 export class PaletteComponent {
   readonly ui = inject(UiService);
+  readonly i18n = inject(I18nService);
   private theme = inject(ThemeService);
   private feedback = inject(FeedbackService);
   private mode = inject(ModeService);
@@ -33,67 +43,66 @@ export class PaletteComponent {
   readonly index = signal(0);
   private input = viewChild<ElementRef<HTMLInputElement>>('input');
 
-  private readonly commands: Command[] = [
-    ...SECTIONS.map<Command>((s) => ({
-      id: `go-${s.id}`,
-      group: 'Ir a',
-      label: s.label,
-      icon: s.icon,
-      run: () => this.ui.go(s.id),
-    })),
-    {
-      id: 'badge',
-      group: 'Acciones',
-      label: 'Ver mi fotocheck con el nombre de tu empresa',
-      icon: '🪪',
-      keywords: 'empresa contratar badge',
-      run: () => {
-        this.ui.go('fotocheck');
-        setTimeout(() => document.querySelector<HTMLInputElement>('#fotocheck input[type=text]')?.focus({ preventScroll: true }), 1300);
+  /** Los comandos se arman en el idioma actual. */
+  private readonly commands = computed<Command[]>(() => {
+    const c = this.i18n.c();
+    const t = c.ui.palette;
+    return [
+      ...SECTIONS.filter((s) => !(s.id === 'stack' && this.mode.simple())).map<Command>((s) => ({
+        id: `go-${s.id}`,
+        group: 'go',
+        label: c.sections[s.id],
+        icon: s.icon,
+        run: () => this.ui.go(s.id),
+      })),
+      {
+        id: 'badge',
+        group: 'actions',
+        label: t.badge,
+        icon: '🪪',
+        keywords: 'empresa company empresa badge cracha fotocheck',
+        run: () => {
+          this.ui.go('fotocheck');
+          setTimeout(() => document.querySelector<HTMLInputElement>('#fotocheck input[type=text]')?.focus({ preventScroll: true }), 1300);
+        },
       },
-    },
-    {
-      id: 'mode',
-      group: 'Acciones',
-      label: 'Cambiar versión: simple / técnica',
-      icon: '⇄',
-      keywords: 'tecnico tecnica simple modo version',
-      run: () => this.mode.toggle(),
-    },
-    { id: 'theme', group: 'Acciones', label: 'Cambiar tema claro / oscuro', icon: '◐', keywords: 'dark light modo', run: () => this.theme.toggle() },
-    { id: 'email', group: 'Acciones', label: 'Copiar mi correo', icon: '⧉', hint: PROFILE.email, keywords: 'email mail', run: () => this.feedback.copy(PROFILE.email, 'Correo') },
-    { id: 'cv', group: 'Acciones', label: 'Descargar CV en PDF', icon: '↓', keywords: 'curriculum pdf', run: () => this.download() },
-    {
-      id: 'rainbow',
-      group: 'Acciones',
-      label: 'Modo arcoíris (easter egg)',
-      icon: '🌈',
-      keywords: 'konami secreto',
-      run: () => {
-        this.theme.toggleRainbow();
-        this.feedback.confetti();
+      { id: 'mode', group: 'actions', label: t.mode, icon: '⇄', keywords: 'tecnico technical simple modo mode version', run: () => this.mode.toggle() },
+      ...this.i18n.langs
+        .filter((l) => l.id !== this.i18n.lang())
+        .map<Command>((l) => ({
+          id: `lang-${l.id}`,
+          group: 'actions',
+          label: t.lang(l.name),
+          icon: '🌐',
+          hint: l.short,
+          keywords: 'idioma language lingua',
+          run: () => this.i18n.set(l.id),
+        })),
+      { id: 'theme', group: 'actions', label: t.theme, icon: '◐', keywords: 'dark light tema theme', run: () => this.theme.toggle() },
+      { id: 'email', group: 'actions', label: t.email, icon: '⧉', hint: PROFILE.email, keywords: 'email mail correo', run: () => this.feedback.copy(PROFILE.email, c.ui.contact.mailCopied) },
+      { id: 'cv', group: 'actions', label: t.cv, icon: '↓', keywords: 'cv curriculum resume pdf', run: () => this.download() },
+      {
+        id: 'rainbow',
+        group: 'actions',
+        label: t.rainbow,
+        icon: '🌈',
+        keywords: 'konami',
+        run: () => {
+          this.theme.toggleRainbow();
+          this.feedback.confetti();
+        },
       },
-    },
-    { id: 'linkedin', group: 'Enlaces', label: 'LinkedIn', icon: 'in', hint: 'linkedin.com/in/edery…', run: () => open(PROFILE.linkedin, '_blank', 'noopener') },
-    { id: 'github', group: 'Enlaces', label: 'GitHub', icon: '⌥', hint: 'github.com/EderyRAV', run: () => open(PROFILE.github, '_blank', 'noopener') },
-    { id: 'whatsapp', group: 'Enlaces', label: 'WhatsApp', icon: '✆', hint: PROFILE.phone, run: () => open(PROFILE.whatsapp, '_blank', 'noopener') },
-  ];
+      { id: 'linkedin', group: 'links', label: 'LinkedIn', icon: 'in', hint: 'linkedin.com/in/edery…', run: () => open(PROFILE.linkedin, '_blank', 'noopener') },
+      { id: 'github', group: 'links', label: 'GitHub', icon: '⌥', hint: 'github.com/EderyRAV', run: () => open(PROFILE.github, '_blank', 'noopener') },
+      { id: 'whatsapp', group: 'links', label: 'WhatsApp', icon: '✆', hint: PROFILE.phone, run: () => open(PROFILE.whatsapp, '_blank', 'noopener') },
+    ];
+  });
 
   readonly results = computed(() => {
-    const q = this.query()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
-      .trim();
-    const available = this.commands.filter((c) => !(c.id === 'go-stack' && this.mode.simple()));
-    if (!q) return available;
-    return available.filter((c) =>
-      `${c.label} ${c.group} ${c.keywords ?? ''} ${c.hint ?? ''}`
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')
-        .includes(q),
-    );
+    const q = plain(this.query()).trim();
+    const all = this.commands();
+    if (!q) return all;
+    return all.filter((c) => plain(`${c.label} ${this.groupLabel(c.group)} ${c.keywords ?? ''} ${c.hint ?? ''}`).includes(q));
   });
 
   constructor() {
@@ -104,6 +113,11 @@ export class PaletteComponent {
         setTimeout(() => this.input()?.nativeElement.focus(), 30);
       }
     });
+  }
+
+  groupLabel(group: Group): string {
+    const t = this.i18n.c().ui.palette;
+    return group === 'go' ? t.go : group === 'actions' ? t.actions : t.links;
   }
 
   onGlobalKey(e: KeyboardEvent): void {
@@ -162,7 +176,7 @@ export class PaletteComponent {
     a.href = PROFILE.cv;
     a.download = 'Edery_Abanto_CV.pdf';
     a.click();
-    this.feedback.toast('Descargando CV…', '↓');
+    this.feedback.toast(this.i18n.c().ui.palette.downloading, '↓');
   }
 
   private scrollActive(): void {

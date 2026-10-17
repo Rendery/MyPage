@@ -1,26 +1,17 @@
+@let ai = i18n.c().ai;
 <section id="ia" class="section ai">
   <div class="ai-glow" aria-hidden="true"></div>
 
   <div class="wrap ai-grid">
     <div class="ai-copy">
-      <p class="eyebrow" appReveal="fade">03 · <b>Inteligencia artificial</b></p>
-      <h2 class="section-title" appSplit>Mi pasión: <em>construir con IA</em></h2>
-      @if (mode.simple()) {
-        <p class="section-lead">
-          Uso asistentes de <b>inteligencia artificial</b> todos los días para crear más rápido. La IA me ayuda a avanzar; yo me aseguro de que todo
-          funcione bien antes de entregarlo.
-        </p>
-      } @else {
-        <p class="section-lead">
-          Trabajo a diario con agentes de código como <b>Claude Code</b> y <b>Codex</b>. Los uso para planificar, implementar y probar más rápido,
-          sin soltar el control: entiendo y reviso cada cambio antes de entregarlo.
-        </p>
-      }
+      <p class="eyebrow" appReveal="fade">03 · <b>{{ ai.eyebrow }}</b></p>
+      <h2 class="section-title" [appSplit]="ai.titleA + ' <em>' + ai.titleB + '</em>'"></h2>
+      <p class="section-lead" [innerHTML]="mode.simple() ? ai.leadSimple : ai.leadTech"></p>
 
       <ol class="principles" appReveal="stagger">
-        @for (p of principles; track p.n) {
+        @for (p of ai.principles; track $index) {
           <li>
-            <span class="n mono">{{ p.n }}</span>
+            <span class="n mono">0{{ $index + 1 }}</span>
             <div>
               <h3>{{ mode.simple() ? p.simpleTitle : p.title }}</h3>
               <p>{{ mode.simple() ? p.simpleText : p.text }}</p>
@@ -34,9 +25,9 @@
       @if (mode.simple()) {
         <div class="ai-simple" appReveal="right">
           <div class="as-head">
-            <span class="as-badge mono">✦ Así trabajo con IA</span>
-            <div class="as-picks" role="group" aria-label="Ejemplo de pedido">
-              @for (r of requests; track r.label; let i = $index) {
+            <span class="as-badge mono">{{ ai.how }}</span>
+            <div class="as-picks" role="group" [attr.aria-label]="ai.requestAria">
+              @for (r of ai.simpleRequests; track $index; let i = $index) {
                 <button type="button" [class.active]="request() === i" [attr.aria-pressed]="request() === i" (click)="pickRequest(i)">{{ r.label }}</button>
               }
             </div>
@@ -45,13 +36,13 @@
           <div class="as-request">
             <span class="as-avatar" aria-hidden="true">🙋</span>
             <div>
-              <small class="mono">Lo que me pides</small>
-              <p class="as-quote">“{{ requests[request()].text }}”</p>
+              <small class="mono">{{ ai.asked }}</small>
+              <p class="as-quote">“{{ ai.simpleRequests[request()].text }}”</p>
             </div>
           </div>
 
           <ol class="as-steps" aria-live="polite">
-            @for (st of steps; track st.title; let i = $index) {
+            @for (st of ai.simpleSteps; track $index; let i = $index) {
               <li [class.done]="step() > i" [class.active]="step() === i">
                 <span class="as-ico" aria-hidden="true">{{ st.icon }}</span>
                 <div>
@@ -63,16 +54,16 @@
             }
           </ol>
 
-          <div class="as-result" [class.show]="step() >= steps.length">
-            <span class="mono">Resultado</span>
-            <b>{{ requests[request()].result }}</b>
+          <div class="as-result" [class.show]="step() >= ai.simpleSteps.length">
+            <span class="mono">{{ ai.result }}</span>
+            <b>{{ ai.simpleRequests[request()].result }}</b>
           </div>
         </div>
       } @else {
         <div class="terminal" appReveal="right">
           <div class="term-head">
             <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
-            <div class="agent-tabs" role="tablist" aria-label="Agente">
+            <div class="agent-tabs" role="tablist" [attr.aria-label]="ai.agentAria">
               <button type="button" role="tab" [attr.aria-selected]="agent() === 'claude'" [class.active]="agent() === 'claude'" (click)="pickAgent('claude')">
                 <span class="ico claude" aria-hidden="true">✻</span> Claude Code
               </button>
@@ -82,10 +73,10 @@
             </div>
           </div>
 
-          <div class="scenarios" role="group" aria-label="Tarea de ejemplo">
-            @for (s of scenarios; track s.id) {
-              <button type="button" class="sc" [class.active]="scenario() === s.id" [attr.aria-pressed]="scenario() === s.id" (click)="pickScenario(s.id)">
-                {{ s.label }}
+          <div class="scenarios" role="group" [attr.aria-label]="ai.taskAria">
+            @for (id of scenarioIds; track id) {
+              <button type="button" class="sc" [class.active]="scenario() === id" [attr.aria-pressed]="scenario() === id" (click)="pickScenario(id)">
+                {{ ai.scenarios[id] }}
               </button>
             }
           </div>
@@ -94,7 +85,7 @@
             @for (l of lines(); track $index) {
               <div class="tl" [class]="'k-' + l.k">
                 @if (l.k === 'prompt') {
-                  <span class="ps">~/proyectos $ </span>
+                  <span class="ps">{{ ai.prompt }}</span>
                 } @else if (l.k === 'user') {
                   <span class="ps">&gt; </span>
                 }
@@ -105,26 +96,26 @@
               </div>
             }
             @if (!running()) {
-              <div class="tl k-dim"><span class="ps">~/proyectos $ </span><span class="caret"></span></div>
+              <div class="tl k-dim"><span class="ps">{{ ai.prompt }}</span><span class="caret"></span></div>
             }
           </div>
 
           <div class="term-foot">
-            <span class="mono">Demo ilustrativa · así trabajo con agentes</span>
-            <button type="button" class="replay mono" (click)="play()" [disabled]="running()">↻ repetir</button>
+            <span class="mono">{{ ai.demo }}</span>
+            <button type="button" class="replay mono" (click)="play()" [disabled]="running()">{{ ai.replay }}</button>
           </div>
         </div>
       }
 
-      <app-avatar class="ai-avatar" pose="coding" />
+      <app-avatar class="ai-avatar" pose="coding" [alt]="i18n.c().ui.hero.avatarAlt" />
     </div>
   </div>
 
-  <div class="toolkit" aria-label="Herramientas de IA">
+  <div class="toolkit" [attr.aria-label]="ai.toolkitAria">
     <div class="toolkit-track">
       @for (round of [0, 1]; track round) {
         <div class="toolkit-set" [attr.aria-hidden]="round === 1">
-          @for (t of toolkit(); track t) {
+          @for (t of toolkit(); track $index) {
             <span>{{ t }}</span>
             <span class="star" aria-hidden="true">✦</span>
           }

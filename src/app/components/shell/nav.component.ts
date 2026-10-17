@@ -5,6 +5,7 @@ import { ThemeService } from '../../services/theme.service';
 import { UiService } from '../../services/ui.service';
 import { Mode, ModeService } from '../../services/mode.service';
 import { FeedbackService } from '../../services/feedback.service';
+import { I18nService, Lang } from '../../i18n/i18n.service';
 import { SECTIONS, SectionId } from '../../data/profile.data';
 
 const DESKTOP_LINKS: SectionId[] = ['fotocheck', 'servicios', 'ia', 'experiencia', 'proyectos', 'formacion'];
@@ -16,11 +17,13 @@ const DOCK: SectionId[] = ['inicio', 'fotocheck', 'ia', 'proyectos', 'contacto']
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '(document:click)': 'onDocClick($event)', '(document:keydown.escape)': 'langOpen.set(false)' },
 })
 export class NavComponent {
   readonly ui = inject(UiService);
   readonly theme = inject(ThemeService);
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
   private feedback = inject(FeedbackService);
   private motion = inject(MotionService);
   private zone = inject(NgZone);
@@ -32,6 +35,7 @@ export class NavComponent {
   /** Resalta el interruptor de versión la primera vez que alguien entra. */
   readonly hint = signal(false);
   readonly scrolled = signal(false);
+  readonly langOpen = signal(false);
   readonly isMac = /Mac|iPhone|iPad/.test(navigator.userAgent);
 
   private bar = viewChild.required<ElementRef<HTMLElement>>('progress');
@@ -45,7 +49,7 @@ export class NavComponent {
       hinted = true;
       setTimeout(() => {
         this.hint.set(true);
-        this.feedback.toast('Estás en la versión simple. ¿Eres técnico? Cambia arriba a «Técnico» ↑', '👀', 6500);
+        this.feedback.toast(this.i18n.c().ui.nav.hint, '👀', 6500);
         setTimeout(() => this.hint.set(false), 6000);
       }, 2500);
     });
@@ -104,6 +108,17 @@ export class NavComponent {
   go(id: SectionId, event?: Event): void {
     event?.preventDefault();
     this.ui.go(id);
+  }
+
+  setLang(lang: Lang): void {
+    this.langOpen.set(false);
+    this.i18n.set(lang);
+    this.feedback.haptic(8);
+  }
+
+  /** Cierra el menú de idioma al hacer clic fuera o al presionar Escape. */
+  onDocClick(e: Event): void {
+    if (this.langOpen() && !(e.target as HTMLElement).closest('.lang')) this.langOpen.set(false);
   }
 
   setMode(mode: Mode): void {

@@ -2,30 +2,33 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { DecimalPipe } from '@angular/common';
 import { FeedbackService } from '../../services/feedback.service';
 import { ModeService } from '../../services/mode.service';
-import { BIENESTAR_MODULES, BienestarModule } from '../../data/profile.data';
+import { I18nService } from '../../i18n/i18n.service';
+import { BIENESTAR_MODULES, ModuleId } from '../../data/profile.data';
 
 interface Cita {
   hora: string;
-  paciente: string;
+  /** Índice del paciente en i18n → ui.demo.patients. */
+  paciente: number;
   terapeuta: string;
   monto: number;
   pagado: boolean;
 }
 
 type Periodo = 'semana' | 'mes';
+type Metodo = 'efectivo' | 'tarjeta' | 'transferencia' | 'extornos';
 
-const CAJA: Record<Periodo, { id: string; label: string; value: number; color: string }[]> = {
+const CAJA: Record<Periodo, { id: Metodo; value: number; color: string }[]> = {
   semana: [
-    { id: 'efectivo', label: 'Efectivo', value: 1240, color: 'var(--lime)' },
-    { id: 'tarjeta', label: 'Tarjeta', value: 2380, color: 'var(--cyan)' },
-    { id: 'transferencia', label: 'Transferencia', value: 1760, color: 'var(--violet)' },
-    { id: 'extornos', label: 'Extornos', value: -160, color: 'var(--orange)' },
+    { id: 'efectivo', value: 1240, color: 'var(--lime)' },
+    { id: 'tarjeta', value: 2380, color: 'var(--cyan)' },
+    { id: 'transferencia', value: 1760, color: 'var(--violet)' },
+    { id: 'extornos', value: -160, color: 'var(--orange)' },
   ],
   mes: [
-    { id: 'efectivo', label: 'Efectivo', value: 5120, color: 'var(--lime)' },
-    { id: 'tarjeta', label: 'Tarjeta', value: 9860, color: 'var(--cyan)' },
-    { id: 'transferencia', label: 'Transferencia', value: 7430, color: 'var(--violet)' },
-    { id: 'extornos', label: 'Extornos', value: -640, color: 'var(--orange)' },
+    { id: 'efectivo', value: 5120, color: 'var(--lime)' },
+    { id: 'tarjeta', value: 9860, color: 'var(--cyan)' },
+    { id: 'transferencia', value: 7430, color: 'var(--violet)' },
+    { id: 'extornos', value: -640, color: 'var(--orange)' },
   ],
 };
 
@@ -40,8 +43,9 @@ const CAJA: Record<Periodo, { id: string; label: string; value: number; color: s
 export class BienestarDemoComponent {
   private feedback = inject(FeedbackService);
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
   readonly modules = BIENESTAR_MODULES;
-  readonly active = signal<BienestarModule['id']>('sunat');
+  readonly active = signal<ModuleId>('sunat');
   readonly current = computed(() => this.modules.find((m) => m.id === this.active())!);
 
   // --- SUNAT ---
@@ -51,25 +55,27 @@ export class BienestarDemoComponent {
   readonly correlativo = signal(118);
   readonly comprobante = signal<null | { serie: string; doc: string; total: number; base: number; igv: number }>(null);
   readonly docError = computed(() => {
+    const t = this.i18n.c().ui.demo;
     const len = this.tipo() === 'boleta' ? 8 : 11;
-    if (!new RegExp(`^\\d{${len}}$`).test(this.doc())) return `El ${this.tipo() === 'boleta' ? 'DNI' : 'RUC'} debe tener ${len} dígitos`;
-    if (!(this.monto() > 0)) return 'El monto debe ser mayor a 0';
+    if (!new RegExp(`^\\d{${len}}$`).test(this.doc())) return t.errDoc(this.tipo() === 'boleta' ? t.dni : t.ruc, len);
+    if (!(this.monto() > 0)) return t.errAmount;
     return null;
   });
-  readonly today = new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium' }).format(new Date());
+  readonly today = computed(() => new Intl.DateTimeFormat(this.i18n.meta().locale, { dateStyle: 'medium' }).format(new Date()));
 
   // --- AGENDAS ---
   readonly citas = signal<Cita[]>([
-    { hora: '09:00', paciente: 'Paciente A. R.', terapeuta: 'Ps. Gómez', monto: 120, pagado: true },
-    { hora: '10:30', paciente: 'Paciente B. T.', terapeuta: 'Ps. Ríos', monto: 80, pagado: false },
-    { hora: '15:00', paciente: 'Paciente C. M.', terapeuta: 'Ps. Gómez', monto: 120, pagado: true },
-    { hora: '17:30', paciente: 'Paciente D. L.', terapeuta: 'Ps. Salas', monto: 100, pagado: false },
+    { hora: '09:00', paciente: 0, terapeuta: 'Ps. Gómez', monto: 120, pagado: true },
+    { hora: '10:30', paciente: 1, terapeuta: 'Ps. Ríos', monto: 80, pagado: false },
+    { hora: '15:00', paciente: 2, terapeuta: 'Ps. Gómez', monto: 120, pagado: true },
+    { hora: '17:30', paciente: 3, terapeuta: 'Ps. Salas', monto: 100, pagado: false },
   ]);
   readonly pendientes = computed(() => this.citas().filter((c) => !c.pagado));
   readonly mensaje = computed(() => {
+    const t = this.i18n.c().ui.demo;
     const p = this.pendientes();
-    if (!p.length) return 'Todas las citas de mañana están pagadas ✅';
-    return ['Recordatorio de citas de mañana 📅', ...p.map((c) => `• ${c.hora} · ${c.paciente} · ${c.terapeuta} · pendiente S/ ${c.monto}`)].join('\n');
+    if (!p.length) return t.allPaid;
+    return [t.reminderTitle, ...p.map((c) => t.pendingLine(c.hora, t.patients[c.paciente], c.terapeuta, c.monto))].join('\n');
   });
 
   // --- FINANZAS ---
@@ -79,7 +85,7 @@ export class BienestarDemoComponent {
   readonly ingresos = computed(() => this.caja().filter((c) => c.value > 0).reduce((s, c) => s + c.value, 0));
   readonly neto = computed(() => this.caja().reduce((s, c) => s + c.value, 0));
 
-  pick(id: BienestarModule['id']): void {
+  pick(id: ModuleId): void {
     this.active.set(id);
     this.feedback.haptic(8);
   }
@@ -118,7 +124,7 @@ export class BienestarDemoComponent {
     this.comprobante.set(null);
     setTimeout(() => this.comprobante.set(nuevo));
     this.feedback.haptic(12);
-    this.feedback.toast('Comprobante generado en PDF (demo)', '🧾');
+    this.feedback.toast(this.i18n.c().ui.demo.toast, '🧾');
   }
 
   togglePago(i: number): void {
@@ -127,7 +133,7 @@ export class BienestarDemoComponent {
   }
 
   copiarMensaje(): void {
-    this.feedback.copy(this.mensaje(), 'Mensaje para WhatsApp');
+    this.feedback.copy(this.mensaje(), this.i18n.c().ui.demo.copyLabel);
   }
 
   share(value: number): number {

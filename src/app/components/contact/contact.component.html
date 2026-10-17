@@ -1,14 +1,15 @@
+@let t = i18n.c().ui.contact;
 <section id="contacto" class="section contact">
   <div class="wrap contact-grid">
     <div class="contact-copy">
-      <p class="eyebrow" appReveal="fade">{{ mode.simple() ? '07' : '08' }} · <b>Contacto</b></p>
-      <h2 class="contact-title" appSplit>¿Construimos algo <em>juntos?</em></h2>
-      <p class="section-lead" appReveal>Busco una práctica preprofesional, remota o híbrida, donde pueda aportar desde el primer día. Respondo rápido.</p>
+      <p class="eyebrow" appReveal="fade">{{ mode.simple() ? '07' : '08' }} · <b>{{ t.eyebrow }}</b></p>
+      <h2 class="contact-title" [appSplit]="t.titleA + ' <em>' + t.titleB + '</em>'"></h2>
+      <p class="section-lead" appReveal>{{ t.lead }}</p>
 
       <div class="channels" appReveal="stagger">
-        <button type="button" class="channel" (click)="copyEmail()" data-cursor="copiar">
+        <button type="button" class="channel" (click)="copyEmail()" [attr.data-cursor]="t.cursor">
           <span class="ch-ico" aria-hidden="true">✉</span>
-          <span><small class="mono">Correo · toca para copiar</small><b>{{ profile.email }}</b></span>
+          <span><small class="mono">{{ t.mail }}</small><b>{{ profile.email }}</b></span>
         </button>
         <a class="channel" [href]="profile.linkedin" target="_blank" rel="noopener">
           <span class="ch-ico" aria-hidden="true">in</span>
@@ -24,30 +25,30 @@
         </a>
       </div>
 
-      <a class="btn primary cv" [href]="profile.cv" download appMagnetic>Descargar CV en PDF <span aria-hidden="true">↓</span></a>
+      <a class="btn primary cv" [href]="profile.cv" download appMagnetic>{{ t.cv }} <span aria-hidden="true">↓</span></a>
     </div>
 
     <div class="contact-side">
-      <app-avatar class="contact-avatar" pose="celebrate" />
+      <app-avatar class="contact-avatar" pose="celebrate" [alt]="i18n.c().ui.hero.avatarAlt" />
 
       <form class="quick card" (submit)="$event.preventDefault(); send()" appReveal>
-        <p class="quick-title">Escríbeme en 10 segundos</p>
+        <p class="quick-title">{{ t.quick }}</p>
         <div class="row">
           <label>
-            <span class="mono">Tu nombre</span>
+            <span class="mono">{{ t.name }}</span>
             <input #n type="text" autocomplete="name" [value]="name()" (input)="name.set(n.value)" />
           </label>
           <label>
-            <span class="mono">Empresa</span>
-            <input #c type="text" autocomplete="organization" [value]="company()" (input)="company.set(c.value)" />
+            <span class="mono">{{ t.company }}</span>
+            <input #co type="text" autocomplete="organization" [value]="company()" (input)="company.set(co.value)" />
           </label>
         </div>
         <label>
-          <span class="mono">Mensaje</span>
-          <textarea #m rows="3" placeholder="Hola Edery, me gustaría conversar contigo sobre…" [value]="message()" (input)="message.set(m.value)"></textarea>
+          <span class="mono">{{ t.message }}</span>
+          <textarea #m rows="3" [placeholder]="t.messagePh" [value]="message()" (input)="message.set(m.value)"></textarea>
         </label>
-        <button type="submit" class="btn primary" appMagnetic>Abrir en mi correo <span aria-hidden="true">→</span></button>
-        <p class="hint mono">Se abre tu app de correo con el mensaje listo. No guardo ningún dato.</p>
+        <button type="submit" class="btn primary" appMagnetic>{{ t.send }} <span aria-hidden="true">→</span></button>
+        <p class="hint mono">{{ t.hint }}</p>
       </form>
     </div>
   </div>
@@ -55,9 +56,9 @@
   <footer class="footer wrap">
     <div class="foot-big" aria-hidden="true">EDERY ABANTO</div>
     <div class="foot-row">
-      <p class="mono">© {{ year }} Edery Abanto · Diseñado y construido con Angular, GSAP y Claude Code</p>
-      <p class="mono easter">Prueba <kbd>Ctrl</kbd> + <kbd>K</kbd> · o el código Konami ↑↑↓↓←→←→BA</p>
-      <button type="button" class="to-top mono" (click)="top()">Volver arriba ↑</button>
+      <p class="mono">{{ t.footer(year) }}</p>
+      <p class="mono easter">{{ t.easterA }} <kbd>Ctrl</kbd> + <kbd>K</kbd> · {{ t.easterB }}</p>
+      <button type="button" class="to-top mono" (click)="top()">{{ t.top }}</button>
     </div>
   </footer>
 </section>

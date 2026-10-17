@@ -2,18 +2,15 @@ import { ChangeDetectionStrategy, Component, ElementRef, NgZone, afterNextRender
 import { gsap } from 'gsap';
 import { MotionService } from '../../services/motion.service';
 import { ModeService } from '../../services/mode.service';
+import { I18nService } from '../../i18n/i18n.service';
 
-const LINES = {
-  tecnico: ['> npx edery@latest', '✓ cargando experiencia.ts', '✓ compilando café → código', '✓ conectando Claude Code + Codex', '✓ imprimiendo tu fotocheck', '✦ listo'],
-  simple: ['> ¡Hola! Soy Edery 👋', '✓ preparando mi experiencia', '✓ cargando proyectos reales', '✓ conectando la inteligencia artificial', '✓ imprimiendo tu fotocheck', '✦ listo'],
-};
 
 /** Intro tipo terminal. Solo aparece en la primera visita de la sesión. */
 @Component({
   selector: 'app-loader',
   template: `
     @if (show()) {
-      <div class="loader" #root role="status" aria-label="Cargando">
+      <div class="loader" #root role="status" [attr.aria-label]="i18n.c().ui.loader.aria">
         <div class="box">
           <div class="term mono">
             @for (l of lines(); track $index; let last = $last) {
@@ -24,7 +21,7 @@ const LINES = {
           </div>
           <div class="bar"><span [style.transform]="'scaleX(' + progress() + ')'"></span></div>
         </div>
-        <button type="button" class="skip mono" (click)="finish()">saltar intro →</button>
+        <button type="button" class="skip mono" (click)="finish()">{{ i18n.c().ui.loader.skip }}</button>
       </div>
     }
   `,
@@ -35,6 +32,7 @@ export class LoaderComponent {
   private motion = inject(MotionService);
   private zone = inject(NgZone);
   private mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
 
   readonly show = signal(true);
   readonly lines = signal<string[]>([]);
@@ -58,7 +56,7 @@ export class LoaderComponent {
         return;
       }
       this.motion.lock(true);
-      const lines = LINES[this.mode.mode()];
+      const lines = this.mode.simple() ? this.i18n.c().ui.loader.simple : this.i18n.c().ui.loader.tech;
       lines.forEach((l, i) => {
         this.timers.push(
           setTimeout(() => {

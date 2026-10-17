@@ -25,6 +25,7 @@
   --grid: rgba(255, 255, 255, 0.045);
   --shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
   --glass: rgba(20, 24, 34, 0.72);
+  --glass-solid: rgba(17, 20, 28, 0.94);
   color-scheme: dark;
 }
 
@@ -49,6 +50,7 @@
   --grid: rgba(18, 20, 26, 0.05);
   --shadow: 0 30px 70px -35px rgba(30, 30, 40, 0.35);
   --glass: rgba(255, 255, 255, 0.75);
+  --glass-solid: rgba(255, 255, 255, 0.95);
   color-scheme: light;
 }
 
@@ -290,6 +292,13 @@ p { margin: 0; }
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Las animaciones infinitas se pausan en las secciones que no están en pantalla */
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
 }
 
 /* SplitText: una palabra nunca se parte entre líneas */

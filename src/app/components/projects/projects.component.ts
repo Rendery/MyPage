@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRe
 import { BienestarDemoComponent } from './bienestar-demo.component';
 import { RevealDirective, SplitDirective, TiltDirective } from '../../directives/motion.directives';
 import { ModeService } from '../../services/mode.service';
+import { I18nService } from '../../i18n/i18n.service';
 import { PROJECTS } from '../../data/profile.data';
 
 @Component({
@@ -13,6 +14,7 @@ import { PROJECTS } from '../../data/profile.data';
 })
 export class ProjectsComponent {
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
   readonly projects = PROJECTS;
   readonly atStart = signal(true);
   readonly atEnd = signal(false);

@@ -14,8 +14,7 @@
   max-width: 800px;
   max-height: 800px;
   border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--violet) 22%, transparent), transparent);
-  filter: blur(30px);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--violet) 18%, transparent), transparent);
   pointer-events: none;
 }
 

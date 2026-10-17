@@ -4,6 +4,7 @@ import { MagneticDirective, RevealDirective, SplitDirective } from '../../direct
 import { FeedbackService } from '../../services/feedback.service';
 import { MotionService } from '../../services/motion.service';
 import { ModeService } from '../../services/mode.service';
+import { I18nService } from '../../i18n/i18n.service';
 import { PROFILE } from '../../data/profile.data';
 
 @Component({
@@ -17,6 +18,7 @@ export class ContactComponent {
   private feedback = inject(FeedbackService);
   private motion = inject(MotionService);
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
   readonly profile = PROFILE;
   readonly year = new Date().getFullYear();
 
@@ -25,19 +27,19 @@ export class ContactComponent {
   readonly message = signal('');
 
   readonly mailto = computed(() => {
+    const t = this.i18n.c().ui.contact;
     const who = [this.name().trim(), this.company().trim()].filter(Boolean).join(' · ');
-    const subject = who ? `Contacto desde tu CV web — ${who}` : 'Contacto desde tu CV web';
-    const body = `${this.message().trim() || 'Hola Edery, me gustaría conversar contigo.'}\n\n${who}`;
-    return `mailto:${PROFILE.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.trim())}`;
+    const body = `${this.message().trim() || t.defaultBody}\n\n${who}`;
+    return `mailto:${PROFILE.email}?subject=${encodeURIComponent(t.subject(who))}&body=${encodeURIComponent(body.trim())}`;
   });
 
   copyEmail(): void {
-    this.feedback.copy(PROFILE.email, 'Correo');
+    this.feedback.copy(PROFILE.email, this.i18n.c().ui.contact.mailCopied);
   }
 
   send(): void {
     location.href = this.mailto();
-    this.feedback.toast('Abriendo tu correo…', '✉');
+    this.feedback.toast(this.i18n.c().ui.contact.opening, '✉');
   }
 
   top(): void {

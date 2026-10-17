@@ -1,58 +1,62 @@
-<div class="tabs" role="tablist" aria-label="Módulos del ecosistema Bienestar">
+@let c = i18n.c();
+@let t = c.ui.demo;
+<div class="tabs" role="tablist" [attr.aria-label]="t.tabsAria">
   @for (m of modules; track m.id) {
     <button type="button" role="tab" class="tab" [class.active]="active() === m.id" [attr.aria-selected]="active() === m.id" (click)="pick(m.id)">
-      <span class="status-dot" [class.dev]="m.status === 'en desarrollo'" aria-hidden="true"></span>
-      <span [class.mono]="!mode.simple()">{{ mode.simple() ? m.simpleName : m.name }}</span>
+      <span class="status-dot" [class.dev]="!m.inProduction" aria-hidden="true"></span>
+      <span [class.mono]="!mode.simple()">{{ mode.simple() ? c.modules[m.id].simpleName : m.name }}</span>
     </button>
   }
 </div>
 
 <div class="panel" role="tabpanel">
   <div class="panel-info">
-    <span class="state mono" [class.dev]="current().status === 'en desarrollo'">● {{ mode.simple() ? (current().status === 'producción' ? 'en uso' : 'en construcción') : current().status }}</span>
-    <p>{{ mode.simple() ? current().simpleDesc : current().desc }}</p>
+    <span class="state mono" [class.dev]="!current().inProduction">
+      ● {{ current().inProduction ? (mode.simple() ? t.prodSimple : t.prod) : mode.simple() ? t.devSimple : t.dev }}
+    </span>
+    <p>{{ mode.simple() ? c.modules[current().id].simpleDesc : c.modules[current().id].desc }}</p>
   </div>
 
   @switch (active()) {
     @case ('sunat') {
       <div class="demo sunat">
         <div class="form">
-          <div class="seg" role="group" aria-label="Tipo de comprobante">
-            <button type="button" [class.active]="tipo() === 'boleta'" (click)="setTipo('boleta')">Boleta</button>
-            <button type="button" [class.active]="tipo() === 'factura'" (click)="setTipo('factura')">Factura</button>
+          <div class="seg" role="group" [attr.aria-label]="t.typeAria">
+            <button type="button" [class.active]="tipo() === 'boleta'" (click)="setTipo('boleta')">{{ t.boleta }}</button>
+            <button type="button" [class.active]="tipo() === 'factura'" (click)="setTipo('factura')">{{ t.factura }}</button>
           </div>
           <label>
-            <span class="mono">{{ tipo() === 'boleta' ? 'DNI' : 'RUC' }}</span>
+            <span class="mono">{{ tipo() === 'boleta' ? t.dni : t.ruc }}</span>
             <input #d inputmode="numeric" [value]="doc()" (input)="setDoc(d.value)" [attr.maxlength]="tipo() === 'boleta' ? 8 : 11" />
           </label>
           <label>
-            <span class="mono">Monto (S/)</span>
+            <span class="mono">{{ t.amount }}</span>
             <input #m type="number" inputmode="decimal" min="1" [value]="monto()" (input)="setMonto(m.value)" />
           </label>
           @if (docError(); as err) {
             <p class="err mono">{{ err }}</p>
           }
-          <button type="button" class="btn primary go" (click)="generar()" [disabled]="!!docError()">Generar comprobante</button>
+          <button type="button" class="btn primary go" (click)="generar()" [disabled]="!!docError()">{{ t.generate }}</button>
         </div>
 
         <div class="printer">
           <div class="slot" aria-hidden="true"></div>
-          @if (comprobante(); as c) {
-              <div class="receipt mono">
-                <b>{{ tipo() === 'boleta' ? 'BOLETA' : 'FACTURA' }} DE VENTA ELECTRÓNICA</b>
-                <span class="serie">{{ c.serie }}</span>
-                <hr />
-                <span>Fecha: {{ today }}</span>
-                <span>{{ tipo() === 'boleta' ? 'DNI' : 'RUC' }}: {{ c.doc }}</span>
-                <span>Servicio: sesión de terapia</span>
-                <hr />
-                <span class="row"><i>Op. gravada</i><i>S/ {{ c.base | number: '1.2-2' }}</i></span>
-                <span class="row"><i>IGV 18%</i><i>S/ {{ c.igv | number: '1.2-2' }}</i></span>
-                <span class="row total"><i>TOTAL</i><i>S/ {{ c.total | number: '1.2-2' }}</i></span>
-                <span class="ready">✓ PDF listo para enviar</span>
-              </div>
+          @if (comprobante(); as r) {
+            <div class="receipt mono">
+              <b>{{ t.receiptTitle(tipo() === 'boleta') }}</b>
+              <span class="serie">{{ r.serie }}</span>
+              <hr />
+              <span>{{ t.date }}: {{ today() }}</span>
+              <span>{{ tipo() === 'boleta' ? t.dni : t.ruc }}: {{ r.doc }}</span>
+              <span>{{ t.service }}</span>
+              <hr />
+              <span class="row"><i>{{ t.taxed }}</i><i>S/ {{ r.base | number: '1.2-2' }}</i></span>
+              <span class="row"><i>{{ t.tax }}</i><i>S/ {{ r.igv | number: '1.2-2' }}</i></span>
+              <span class="row total"><i>{{ t.total }}</i><i>S/ {{ r.total | number: '1.2-2' }}</i></span>
+              <span class="ready">{{ t.pdfReady }}</span>
+            </div>
           } @else {
-            <p class="empty mono">El comprobante aparecerá aquí ↓</p>
+            <p class="empty mono">{{ t.empty }}</p>
           }
         </div>
       </div>
@@ -61,23 +65,23 @@
     @case ('agendas') {
       <div class="demo agendas">
         <ul class="citas">
-          @for (c of citas(); track c.hora; let i = $index) {
-            <li [class.pending]="!c.pagado">
-              <span class="hora mono">{{ c.hora }}</span>
+          @for (cita of citas(); track cita.hora; let i = $index) {
+            <li [class.pending]="!cita.pagado">
+              <span class="hora mono">{{ cita.hora }}</span>
               <span class="who">
-                <b>{{ c.paciente }}</b>
-                <small>{{ c.terapeuta }} · S/ {{ c.monto }}</small>
+                <b>{{ t.patients[cita.paciente] }}</b>
+                <small>{{ cita.terapeuta }} · S/ {{ cita.monto }}</small>
               </span>
-              <button type="button" class="pay mono" (click)="togglePago(i)" [attr.aria-label]="'Marcar como ' + (c.pagado ? 'pendiente' : 'pagado')">
-                {{ c.pagado ? '✓ pagado' : '⚠ pendiente' }}
+              <button type="button" class="pay mono" (click)="togglePago(i)" [attr.aria-label]="t.markAs(cita.pagado)">
+                {{ cita.pagado ? t.paid : t.pending }}
               </button>
             </li>
           }
         </ul>
         <div class="wa">
-          <div class="wa-head mono"><span class="wa-dot"></span> Mensaje para WhatsApp</div>
+          <div class="wa-head mono"><span class="wa-dot"></span> {{ t.waHead }}</div>
           <pre class="wa-bubble">{{ mensaje() }}</pre>
-          <button type="button" class="btn go" (click)="copiarMensaje()">Copiar mensaje ⧉</button>
+          <button type="button" class="btn go" (click)="copiarMensaje()">{{ t.copy }}</button>
         </div>
       </div>
     }
@@ -85,31 +89,31 @@
     @case ('finanzas') {
       <div class="demo finanzas">
         <div class="fin-head">
-          <div class="seg" role="group" aria-label="Período">
-            <button type="button" [class.active]="periodo() === 'semana'" (click)="periodo.set('semana')">Semana</button>
-            <button type="button" [class.active]="periodo() === 'mes'" (click)="periodo.set('mes')">Mes</button>
+          <div class="seg" role="group" [attr.aria-label]="t.periodAria">
+            <button type="button" [class.active]="periodo() === 'semana'" (click)="periodo.set('semana')">{{ t.week }}</button>
+            <button type="button" [class.active]="periodo() === 'mes'" (click)="periodo.set('mes')">{{ t.month }}</button>
           </div>
           <div class="neto">
-            <span class="mono">Neto del período</span>
+            <span class="mono">{{ t.net }}</span>
             <b>S/ {{ neto() | number: '1.0-0' }}</b>
           </div>
         </div>
 
         <div class="stack-bar" aria-hidden="true">
-          @for (c of caja(); track c.id) {
-            @if (c.value > 0) {
-              <span [style.flex-grow]="share(c.value)" [style.background]="c.color" [class.dim]="foco() && foco() !== c.id"></span>
+          @for (m of caja(); track m.id) {
+            @if (m.value > 0) {
+              <span [style.flex-grow]="share(m.value)" [style.background]="m.color" [class.dim]="foco() && foco() !== m.id"></span>
             }
           }
         </div>
 
         <ul class="legend">
-          @for (c of caja(); track c.id) {
+          @for (m of caja(); track m.id) {
             <li>
-              <button type="button" (mouseenter)="foco.set(c.id)" (mouseleave)="foco.set(null)" (focus)="foco.set(c.id)" (blur)="foco.set(null)" (click)="foco.set(foco() === c.id ? null : c.id)" [class.active]="foco() === c.id">
-                <i [style.background]="c.color"></i>
-                <span>{{ c.label }}</span>
-                <b class="mono" [class.neg]="c.value < 0">S/ {{ c.value | number: '1.0-0' }}</b>
+              <button type="button" (mouseenter)="foco.set(m.id)" (mouseleave)="foco.set(null)" (focus)="foco.set(m.id)" (blur)="foco.set(null)" (click)="foco.set(foco() === m.id ? null : m.id)" [class.active]="foco() === m.id">
+                <i [style.background]="m.color"></i>
+                <span>{{ t.methods[m.id] }}</span>
+                <b class="mono" [class.neg]="m.value < 0">S/ {{ m.value | number: '1.0-0' }}</b>
               </button>
             </li>
           }
@@ -120,18 +124,18 @@
     @case ('informes') {
       <div class="demo informes">
         <div class="kpis">
-          <div><span class="mono">Evaluaciones</span><b class="sk"></b></div>
-          <div><span class="mono">Pacientes</span><b class="sk"></b></div>
-          <div><span class="mono">Informes</span><b class="sk"></b></div>
+          @for (k of t.kpis; track $index) {
+            <div><span class="mono">{{ k }}</span><b class="sk"></b></div>
+          }
         </div>
         <svg class="chart" viewBox="0 0 300 100" preserveAspectRatio="none" aria-hidden="true">
           <path class="area" d="M0 80 C40 70 60 40 100 48 S160 20 200 30 S260 10 300 18 V100 H0 Z" />
           <path class="line" d="M0 80 C40 70 60 40 100 48 S160 20 200 30 S260 10 300 18" pathLength="1" />
         </svg>
-        <div class="dev-note mono">🛠 En desarrollo: reemplazará las hojas de cálculo de los terapeutas.</div>
+        <div class="dev-note mono">{{ t.devNote }}</div>
       </div>
     }
   }
 
-  <p class="footnote mono">Datos de ejemplo: la versión real maneja información privada de la clínica.</p>
+  <p class="footnote mono">{{ t.footnote }}</p>
 </div>

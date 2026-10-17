@@ -4,9 +4,10 @@ import { Flip } from 'gsap/Flip';
 import { RevealDirective, SplitDirective } from '../../directives/motion.directives';
 import { FeedbackService } from '../../services/feedback.service';
 import { MotionService } from '../../services/motion.service';
-import { METHODS, STACK, StackCategory } from '../../data/profile.data';
+import { STACK, StackCategory } from '../../data/profile.data';
+import { I18nService } from '../../i18n/i18n.service';
 
-const CATS: StackCategory[] = ['Frontend', 'Backend', 'Datos', 'Automatización', 'QA', 'Cloud', 'IA', 'Móvil'];
+const CATS: StackCategory[] = ['frontend', 'backend', 'data', 'automation', 'qa', 'cloud', 'ai', 'mobile'];
 
 @Component({
   selector: 'app-stack',
@@ -20,10 +21,10 @@ export class StackComponent {
   private feedback = inject(FeedbackService);
   private zone = inject(NgZone);
 
+  readonly i18n = inject(I18nService);
   readonly cats = CATS;
-  readonly methods = METHODS;
   readonly all = STACK;
-  readonly filter = signal<StackCategory | 'Todo'>('Todo');
+  readonly filter = signal<StackCategory | 'all'>('all');
   readonly counts = computed(() => Object.fromEntries(CATS.map((c) => [c, STACK.filter((s) => s.cat === c).length])) as Record<StackCategory, number>);
   readonly rowA = STACK.slice(0, Math.ceil(STACK.length / 2));
   readonly rowB = STACK.slice(Math.ceil(STACK.length / 2));
@@ -60,7 +61,7 @@ export class StackComponent {
     });
   }
 
-  setFilter(f: StackCategory | 'Todo'): void {
+  setFilter(f: StackCategory | 'all'): void {
     if (f === this.filter()) return;
     this.feedback.haptic(6);
     const tiles = this.grid().nativeElement.querySelectorAll('.tile');
@@ -83,6 +84,6 @@ export class StackComponent {
   }
 
   visible(cat: StackCategory): boolean {
-    return this.filter() === 'Todo' || this.filter() === cat;
+    return this.filter() === 'all' || this.filter() === cat;
   }
 }

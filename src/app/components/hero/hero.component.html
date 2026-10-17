@@ -1,3 +1,5 @@
+@let c = i18n.c();
+@let ui = c.ui.hero;
 <section id="inicio" class="hero">
   <div class="hero-bg grid-bg" aria-hidden="true"></div>
   <div class="hero-aurora" aria-hidden="true"></div>
@@ -6,10 +8,10 @@
     <div class="h-top hero-copy-fade">
       <p class="status h-reveal">
         <span class="pulse"></span>
-        {{ profile.status }} · {{ profile.location }} · {{ profile.modality }}
+        {{ c.profile.status }} · {{ c.profile.location }} · {{ c.profile.modality }}
       </p>
       <h1 class="hero-title">
-        <span class="h-line"><span>Hola, soy</span></span>
+        <span class="h-line"><span>{{ ui.hello }}</span></span>
         <span class="h-line name"><span>Edery<span class="dot">.</span></span></span>
       </h1>
     </div>
@@ -21,8 +23,8 @@
         <div class="layer" data-depth="0.25" aria-hidden="true"><div class="ring"></div></div>
 
         <div class="layer avatar-layer" data-depth="0.45">
-          <button class="avatar-btn" type="button" (click)="poke()" aria-label="Tocar a Edery: dice un mensaje" data-cursor="¡hola!">
-            <app-avatar class="hero-avatar" pose="hero" [track]="true" />
+          <button class="avatar-btn" type="button" (click)="poke()" [attr.aria-label]="ui.pokeAria" [attr.data-cursor]="ui.cursorHi">
+            <app-avatar class="hero-avatar" pose="hero" [track]="true" [alt]="ui.avatarAlt" />
           </button>
         </div>
 
@@ -32,44 +34,45 @@
 
         @for (chip of chips; track $index) {
           <div class="chip-layer" [attr.data-depth]="chip.d" [style.left.%]="chip.x" [style.top.%]="chip.y">
-            <span class="float-chip" [class]="'tone-' + chip.tone" data-cursor="arrastra">
-              <span class="float-inner" [style.animation-delay.s]="$index * -0.7">{{ mode.simple() ? chip.simple : chip.tecnico }}</span>
+            <span class="float-chip" [class]="'tone-' + chip.tone" [attr.data-cursor]="ui.cursorDrag">
+              <span class="float-inner" [style.animation-delay.s]="$index * -0.7">{{ mode.simple() ? ui.chipsSimple[$index] : chip.tecnico }}</span>
             </span>
           </div>
         }
       </div>
       <p class="scene-hint mono" aria-hidden="true">
         @if (gyroAvailable()) {
-          <button type="button" class="gyro-btn" (click)="enableGyro()">Activar movimiento 📱</button>
+          <button type="button" class="gyro-btn" (click)="enableGyro()">{{ ui.gyro }}</button>
         } @else {
-          ↑ tócame · arrastra las burbujas
+          {{ ui.hint }}
         }
       </p>
     </div>
 
     <div class="h-bottom hero-copy-fade">
       <p class="rotator h-reveal">
-        {{ mode.simple() ? profile.simpleLead : 'Construyo software' }}
+        {{ mode.simple() ? c.profile.simpleLead : c.profile.techLead }}
         <span class="rot-slot">
           <span class="rot-word" #rot aria-live="polite">{{ roles()[roleIndex() % roles().length] }}</span>
         </span>
       </p>
-      <p class="summary h-reveal">{{ mode.simple() ? profile.simpleSummary : profile.summary }}</p>
+      <p class="summary h-reveal">{{ mode.simple() ? c.profile.simpleSummary : c.profile.summary }}</p>
 
       <div class="ctas h-reveal">
         <button class="btn primary" type="button" appMagnetic (click)="go('fotocheck')">
-          Ver mi fotocheck <span aria-hidden="true">🪪</span>
+          {{ ui.ctaBadge }} <span aria-hidden="true">🪪</span>
         </button>
-        <a class="btn" [href]="profile.cv" download appMagnetic>Descargar CV <span aria-hidden="true">↓</span></a>
+        <a class="btn" [href]="profile.cv" download appMagnetic>{{ ui.ctaCv }} <span aria-hidden="true">↓</span></a>
       </div>
 
       <dl class="stats h-reveal">
-        @for (s of stats; track s.label) {
+        @for (s of stats; track $index) {
+          @let txt = c.stats[$index];
           <div class="stat">
-            <dt class="sr-only">{{ mode.simple() ? s.simpleLabel : s.label }}</dt>
+            <dt class="sr-only">{{ mode.simple() ? txt.simpleLabel : txt.label }}</dt>
             <dd>
-              <b><span [appCountUp]="s.value">{{ s.value }}</span>{{ s.suffix }}</b>
-              <span>{{ mode.simple() ? s.simpleLabel : s.label }}</span>
+              <b><span [appCountUp]="s.value">{{ s.value }}</span>{{ txt.suffix }}</b>
+              <span>{{ mode.simple() ? txt.simpleLabel : txt.label }}</span>
             </dd>
           </div>
         }
@@ -77,7 +80,7 @@
     </div>
   </div>
 
-  <button class="scroll-cue" type="button" (click)="go('fotocheck')" aria-label="Bajar a la siguiente sección">
+  <button class="scroll-cue" type="button" (click)="go('fotocheck')" [attr.aria-label]="ui.scrollAria">
     <span class="mouse"><span></span></span>
     <span class="mono">scroll</span>
   </button>

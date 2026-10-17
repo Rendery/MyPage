@@ -1,12 +1,13 @@
+@let t = i18n.c().ui.palette;
 @if (ui.paletteOpen()) {
   <div class="pal-backdrop" (click)="close()" aria-hidden="true"></div>
-  <div class="pal" role="dialog" aria-modal="true" aria-label="Paleta de comandos">
+  <div class="pal" role="dialog" aria-modal="true" [attr.aria-label]="t.aria">
     <div class="pal-search">
       <span class="mono" aria-hidden="true">›</span>
       <input
         #input
         type="text"
-        placeholder="¿A dónde vamos? Escribe una sección o acción…"
+        [placeholder]="t.placeholder"
         [value]="query()"
         (input)="setQuery(input.value)"
         (keydown)="onKey($event)"
@@ -21,7 +22,7 @@
     <ul class="pal-list" id="pal-list" role="listbox" data-lenis-prevent>
       @for (c of results(); track c.id; let i = $index) {
         @if (isFirstOfGroup(i)) {
-          <li class="pal-group mono" role="presentation">{{ c.group }}</li>
+          <li class="pal-group mono" role="presentation">{{ groupLabel(c.group) }}</li>
         }
         <li
           class="pal-item"
@@ -40,14 +41,14 @@
           <span class="enter mono" aria-hidden="true">↵</span>
         </li>
       } @empty {
-        <li class="pal-empty mono">Nada por aquí. Prueba con “IA”, “fotocheck” o “CV”.</li>
+        <li class="pal-empty mono">{{ t.empty }}</li>
       }
     </ul>
 
     <div class="pal-foot mono" aria-hidden="true">
-      <span><kbd>↑</kbd><kbd>↓</kbd> moverse</span>
-      <span><kbd>↵</kbd> abrir</span>
-      <span><kbd>esc</kbd> cerrar</span>
+      <span><kbd>↑</kbd><kbd>↓</kbd> {{ t.move }}</span>
+      <span><kbd>↵</kbd> {{ t.open }}</span>
+      <span><kbd>esc</kbd> {{ t.close }}</span>
     </div>
   </div>
 }

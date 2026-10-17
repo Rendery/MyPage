@@ -1,21 +1,25 @@
+@let c = i18n.c();
+@let t = c.ui.exp;
 <section id="experiencia" class="section">
   <div class="wrap">
-    <p class="eyebrow" appReveal="fade">04 · <b>Experiencia</b></p>
-    <h2 class="section-title" appSplit>Donde ya <em>aporté</em></h2>
-    <p class="section-lead" appReveal>Del más reciente al más antiguo. Abre cada etapa para ver {{ mode.simple() ? 'lo que logré' : 'los logros' }}.</p>
+    <p class="eyebrow" appReveal="fade">04 · <b>{{ t.eyebrow }}</b></p>
+    <h2 class="section-title" [appSplit]="t.titleA + ' <em>' + t.titleB + '</em>'"></h2>
+    <p class="section-lead" appReveal>{{ mode.simple() ? t.leadSimple : t.leadTech }}</p>
 
     <div class="timeline" #timeline>
       <div class="tl-line" aria-hidden="true"><div class="tl-progress"></div></div>
 
-      @for (job of jobs; track job.company; let i = $index) {
+      @for (job of jobs; track job.id; let i = $index) {
+        @let txt = c.jobs[job.id];
+        @let bullets = mode.simple() ? txt.simpleBullets : txt.bullets;
         <article class="job" [class.is-open]="open().has(i)">
           <span class="tl-dot" [class.current]="job.current" aria-hidden="true"></span>
 
           <div class="job-when" appReveal="left">
-            <span class="period mono">{{ job.period }}</span>
-            <span class="duration">{{ job.duration }}</span>
+            <span class="period mono">{{ txt.period }}</span>
+            <span class="duration">{{ txt.duration }}</span>
             @if (job.current) {
-              <span class="now mono"><i></i> Actual</span>
+              <span class="now mono"><i></i> {{ t.now }}</span>
             }
           </div>
 
@@ -23,35 +27,35 @@
             <header>
               <span class="company-badge" aria-hidden="true">{{ job.companyShort.slice(0, 2).toUpperCase() }}</span>
               <div>
-                <h3>{{ mode.simple() ? job.simpleRole : job.role }}</h3>
-                <p class="company">{{ job.company }} · <span class="muted">{{ job.place }}</span></p>
+                <h3>{{ mode.simple() ? txt.simpleRole : txt.role }}</h3>
+                <p class="company">{{ job.company }} · <span class="muted">{{ txt.place }}</span></p>
               </div>
             </header>
 
-            <p class="summary">{{ mode.simple() ? job.simpleSummary : job.summary }}</p>
+            <p class="summary">{{ mode.simple() ? txt.simpleSummary : txt.summary }}</p>
 
             <button type="button" class="job-toggle mono" [attr.aria-expanded]="open().has(i)" (click)="toggle(i)">
-              {{ open().has(i) ? 'Ocultar logros' : 'Ver logros (' + (mode.simple() ? job.simpleBullets : job.bullets).length + ')' }}
+              {{ open().has(i) ? t.hide : t.show(bullets.length) }}
               <span class="plus" aria-hidden="true"></span>
             </button>
 
             <div class="job-more">
               <div>
                 <ul class="bullets">
-                  @for (b of mode.simple() ? job.simpleBullets : job.bullets; track $index) {
+                  @for (b of bullets; track $index) {
                     <li>{{ b }}</li>
                   }
                 </ul>
-                @if (job.previousRole; as prev) {
-                  <p class="prev mono">Antes en la misma empresa: {{ prev.role }} · {{ prev.period }}</p>
+                @if (txt.previousRole) {
+                  <p class="prev mono">{{ t.previous }} {{ txt.previousRole }}</p>
                 }
               </div>
             </div>
 
             @if (!mode.simple()) {
               <ul class="tags">
-                @for (t of job.tags; track t) {
-                  <li class="chip">{{ t }}</li>
+                @for (tag of job.tags; track tag) {
+                  <li class="chip">{{ i18n.term(tag) }}</li>
                 }
               </ul>
             }

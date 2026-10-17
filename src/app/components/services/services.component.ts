@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { RevealDirective, SplitDirective, TiltDirective } from '../../directives/motion.directives';
 import { FeedbackService } from '../../services/feedback.service';
 import { CAPABILITIES } from '../../data/profile.data';
+import { I18nService } from '../../i18n/i18n.service';
 
 @Component({
   selector: 'app-services',
@@ -12,6 +13,7 @@ import { CAPABILITIES } from '../../data/profile.data';
 })
 export class ServicesComponent {
   private feedback = inject(FeedbackService);
+  readonly i18n = inject(I18nService);
   readonly caps = CAPABILITIES;
   readonly open = signal<string | null>(null);
 

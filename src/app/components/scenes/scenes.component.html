@@ -1,97 +1,108 @@
+@let sc = i18n.c().scenes;
 <section id="servicios" class="section scenes">
   <div class="wrap">
-    <p class="eyebrow" appReveal="fade">02 · <b>Lo que puedo hacer</b></p>
-    <h2 class="section-title" appSplit>Lo que puedo hacer <em>por tu negocio</em></h2>
-    <p class="section-lead" appReveal>Sin palabras técnicas: así se ve en la práctica. Cada ejemplo se mueve solo.</p>
+    <p class="eyebrow" appReveal="fade">02 · <b>{{ sc.eyebrow }}</b></p>
+    <h2 class="section-title" [appSplit]="sc.titleA + ' <em>' + sc.titleB + '</em>'"></h2>
+    <p class="section-lead" appReveal>{{ sc.lead }}</p>
 
     <div class="scene-list">
       @for (s of scenes; track s.id; let i = $index) {
+        @let txt = sc.items[s.id];
         <article class="scene" [class]="'scene-' + s.id" [class.flip]="i % 2 === 1">
           <div class="scene-copy" appReveal>
             <div class="scene-top">
               <span class="scene-num mono">0{{ i + 1 }}</span>
               <span class="scene-icon" aria-hidden="true">{{ s.icon }}</span>
               @if (s.real) {
-                <span class="real-badge mono">✓ Caso real</span>
+                <span class="real-badge mono">{{ sc.realBadge }}</span>
               }
             </div>
-            <h3>{{ s.title }}</h3>
-            <p class="desc">{{ s.desc }}</p>
+            <h3>{{ txt.title }}</h3>
+            <p class="desc">{{ txt.desc }}</p>
             <ul class="benefits">
-              @for (b of s.benefits; track b) {
+              @for (b of txt.benefits; track $index) {
                 <li>{{ b }}</li>
               }
             </ul>
-            @if (s.note) {
-              <p class="note">{{ s.note }}</p>
+            @if (txt.note) {
+              <p class="note">{{ txt.note }}</p>
             }
             @if (s.real) {
-              <button type="button" class="btn primary try" appMagnetic (click)="goToProjects()">Pruébalo tú mismo <span aria-hidden="true">↓</span></button>
+              <button type="button" class="btn primary try" appMagnetic (click)="goToProjects()">{{ sc.tryIt }} <span aria-hidden="true">↓</span></button>
             }
           </div>
 
           <div class="scene-visual" [attr.data-scene]="s.id" aria-hidden="true">
             @switch (s.id) {
               @case ('bot') {
+                @let b = sc.bot;
                 <div class="phone chat">
                   <div class="ph-notch"></div>
                   <div class="ph-screen">
                     <div class="wa-head">
                       <span class="wa-av">🦷</span>
-                      <div><b>Clínica Sonrisa</b><small>en línea · responde al instante</small></div>
+                      <div><b>{{ b.clinic }}</b><small>{{ b.online }}</small></div>
                     </div>
                     <div class="wa-body">
-                      <div class="wa-time">🌙 Hoy · 3:02 a. m.</div>
-                      <div class="msg me m1">Hola, ¿tienen cita para mañana? 🙂<i>3:02</i></div>
+                      <div class="wa-time">{{ b.day }}</div>
+                      <div class="msg me m1">{{ b.m1 }}<i>{{ b.t1 }}</i></div>
                       <div class="typing ty1"><i></i><i></i><i></i></div>
-                      <div class="msg bot m2">¡Hola! 😊 Sí, estos horarios están libres:<i>3:02</i></div>
-                      <div class="quick"><span>10:00</span><span class="pick">15:30</span><span>18:00</span></div>
-                      <div class="msg me m3">15:30, por favor<i>3:03</i></div>
+                      <div class="msg bot m2">{{ b.m2 }}<i>{{ b.t1 }}</i></div>
+                      <div class="quick">
+                        @for (slot of b.slots; track $index) {
+                          <span [class.pick]="$index === 1">{{ slot }}</span>
+                        }
+                      </div>
+                      <div class="msg me m3">{{ b.m3 }}<i>{{ b.t2 }}</i></div>
                       <div class="typing ty2"><i></i><i></i><i></i></div>
-                      <div class="msg bot m4">¡Listo! ✅ Tu cita quedó para mañana a las 15:30. Te enviaré un recordatorio.<i>3:03</i></div>
+                      <div class="msg bot m4">{{ b.m4 }}<i>{{ b.t2 }}</i></div>
                     </div>
-                    <div class="wa-input"><span>Escribe un mensaje</span><b>➤</b></div>
+                    <div class="wa-input"><span>{{ b.input }}</span><b>➤</b></div>
                   </div>
                 </div>
                 <div class="pop cal">
                   <span class="pop-ico">📅</span>
-                  <div><b>Nueva cita agendada</b><small>Mañana · 15:30 · sin que nadie la tipee</small></div>
+                  <div><b>{{ b.popTitle }}</b><small>{{ b.popText }}</small></div>
                 </div>
               }
 
               @case ('app') {
+                @let a = sc.app;
                 <div class="phone app">
                   <div class="ph-notch"></div>
                   <div class="ph-screen">
                     <div class="app-head">
-                      <b>Mi<span>Tienda</span></b>
+                      <b>{{ a.brandA }}<span>{{ a.brandB }}</span></b>
                       <span class="cart">🛒<i class="cart-n">0</i></span>
                     </div>
                     <div class="screens">
                       <div class="scr s1">
-                        <div class="search">🔍 Buscar productos</div>
-                        <div class="banner"><b>-20%</b> en zapatillas</div>
+                        <div class="search">{{ a.search }}</div>
+                        <div class="banner"><b>{{ a.bannerA }}</b> {{ a.bannerB }}</div>
                         <div class="grid">
-                          <div class="prod p1"><span>👟</span><b>Zapatillas</b><small>S/ 189</small></div>
-                          <div class="prod"><span>🎧</span><b>Audífonos</b><small>S/ 99</small></div>
-                          <div class="prod"><span>⌚</span><b>Reloj</b><small>S/ 249</small></div>
-                          <div class="prod"><span>🧢</span><b>Gorra</b><small>S/ 49</small></div>
+                          @for (p of a.products; track $index) {
+                            <div class="prod" [class.p1]="$index === 0"><span>{{ p.icon }}</span><b>{{ p.name }}</b><small>{{ p.price }}</small></div>
+                          }
                         </div>
                       </div>
                       <div class="scr s2">
                         <div class="hero-prod">👟</div>
-                        <b class="p-name">Zapatillas Run</b>
+                        <b class="p-name">{{ a.detailName }}</b>
                         <div class="stars">★★★★★ <small>(128)</small></div>
-                        <div class="price">S/ 189</div>
+                        <div class="price">{{ a.price }}</div>
                         <div class="sizes"><span>39</span><span class="on">40</span><span>41</span><span>42</span></div>
-                        <div class="add-btn">Agregar al carrito</div>
+                        <div class="add-btn">{{ a.add }}</div>
                       </div>
                       <div class="scr s3">
                         <div class="check">✓</div>
-                        <b>¡Pedido confirmado!</b>
-                        <small>Llega hoy entre 4 y 6 p. m.</small>
+                        <b>{{ a.confirmed }}</b>
+                        <small>{{ a.eta }}</small>
                         <div class="track"><div class="track-fill"></div></div>
-                        <div class="track-labels"><span>Preparando</span><span>En camino</span><span>Entregado</span></div>
+                        <div class="track-labels">
+                          @for (step of a.track; track $index) {
+                            <span>{{ step }}</span>
+                          }
+                        </div>
                       </div>
                     </div>
                     <div class="tabbar"><span>🏠</span><span>🔍</span><span>❤️</span><span>👤</span></div>
@@ -100,28 +111,19 @@
                 </div>
                 <div class="pop notif">
                   <span class="pop-ico">🔔</span>
-                  <div><b>MiTienda</b><small>Tu pedido va en camino 🛵</small></div>
+                  <div><b>{{ a.notifTitle }}</b><small>{{ a.notifText }}</small></div>
                 </div>
               }
 
               @case ('auto') {
+                @let au = sc.auto;
                 <div class="auto">
-                  <span class="zone-label mono">Antes</span>
-                  <div class="sheet xls">
-                    <i class="h"></i><i></i><i class="err"></i><i></i><i></i>
-                  </div>
-                  <div class="sheet doc">
-                    <i class="h"></i><i></i><i></i><i class="short"></i>
-                  </div>
-                  <div class="sheet mail">
-                    <b>✉</b><i></i><i class="short"></i>
-                  </div>
-                  <div class="sheet xls">
-                    <i class="h"></i><i></i><i></i><i class="err"></i>
-                  </div>
-                  <div class="sheet doc">
-                    <i class="h"></i><i></i><i class="short"></i>
-                  </div>
+                  <span class="zone-label mono">{{ au.before }}</span>
+                  <div class="sheet xls"><i class="h"></i><i></i><i class="err"></i><i></i><i></i></div>
+                  <div class="sheet doc"><i class="h"></i><i></i><i></i><i class="short"></i></div>
+                  <div class="sheet mail"><b>✉</b><i></i><i class="short"></i></div>
+                  <div class="sheet xls"><i class="h"></i><i></i><i></i><i class="err"></i></div>
+                  <div class="sheet doc"><i class="h"></i><i></i><i class="short"></i></div>
 
                   <div class="machine">
                     <span class="gear g1">⚙</span>
@@ -129,55 +131,56 @@
                   </div>
 
                   <div class="report">
-                    <div class="r-head"><b>Reporte del día</b><small>listo a las 8:00 a. m.</small></div>
+                    <div class="r-head"><b>{{ au.reportTitle }}</b><small>{{ au.reportTime }}</small></div>
                     <div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                    <div class="r-ok">✓ Enviado a tu correo</div>
+                    <div class="r-ok">{{ au.sent }}</div>
                   </div>
 
-                  <div class="go-btn">⚡ Automatizar</div>
+                  <div class="go-btn">{{ au.go }}</div>
 
                   <div class="vs">
-                    <span class="before">Antes: horas copiando y pegando<i class="strike"></i></span>
-                    <span class="after">Ahora: un clic</span>
+                    <span class="before">{{ au.vsBefore }}<i class="strike"></i></span>
+                    <span class="after">{{ au.vsAfter }}</span>
                   </div>
                 </div>
                 <div class="finger"><span class="ripple"></span></div>
               }
 
               @case ('boleta') {
+                @let bo = sc.boleta;
                 <div class="pos">
                   <div class="laptop">
                     <div class="lp-screen">
-                      <div class="lp-bar"><i></i><i></i><i></i><span>Bienestar · Comprobantes</span></div>
+                      <div class="lp-bar"><i></i><i></i><i></i><span>{{ bo.app }}</span></div>
                       <div class="lp-body">
                         <div class="field">
-                          <label>DNI del cliente</label>
+                          <label>{{ bo.dni }}</label>
                           <div class="inp"><span class="t-dni"></span><i class="caret"></i></div>
                         </div>
                         <div class="field">
-                          <label>Monto</label>
+                          <label>{{ bo.amount }}</label>
                           <div class="inp">S/&nbsp;<span class="t-monto"></span></div>
                         </div>
-                        <div class="gen-btn">Generar boleta</div>
+                        <div class="gen-btn">{{ bo.generate }}</div>
                       </div>
                     </div>
                     <div class="lp-base"></div>
                   </div>
 
                   <div class="ticket">
-                    <b>BOLETA ELECTRÓNICA</b>
+                    <b>{{ bo.ticketTitle }}</b>
                     <span class="serie">B001-000124</span>
                     <hr />
                     <span class="row"><i>DNI</i><i>12345678</i></span>
-                    <span class="row"><i>Sesión de terapia</i><i>S/ 150.00</i></span>
+                    <span class="row"><i>{{ bo.service }}</i><i>S/ 150.00</i></span>
                     <hr />
-                    <span class="row tot"><i>TOTAL</i><i>S/ 150.00</i></span>
-                    <span class="ok">✓ PDF listo</span>
+                    <span class="row tot"><i>{{ bo.total }}</i><i>S/ 150.00</i></span>
+                    <span class="ok">{{ bo.ready }}</span>
                   </div>
 
                   <div class="pop sent">
                     <span class="pop-ico">📲</span>
-                    <div><b>Enviada por WhatsApp</b><small>al cliente, en segundos</small></div>
+                    <div><b>{{ bo.sentTitle }}</b><small>{{ bo.sentText }}</small></div>
                   </div>
                 </div>
                 <div class="finger"><span class="ripple"></span></div>
@@ -188,8 +191,6 @@
       }
     </div>
 
-    <p class="scene-footnote mono" appReveal="fade">
-      Los tres primeros son ejemplos ilustrativos de lo que puedo construir. El de boletas es un sistema real, hecho por mí.
-    </p>
+    <p class="scene-footnote mono" appReveal="fade">{{ sc.footnote }}</p>
   </div>
 </section>

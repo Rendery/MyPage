@@ -30,13 +30,12 @@
   translate: -50% 0;
   border-radius: 999px;
   border: 1px solid transparent;
-  transition: translate 0.5s var(--ease-out), background-color 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+  transition: translate 0.5s var(--ease-out), background-color 0.4s, border-color 0.4s;
 
   &.scrolled {
-    background: var(--glass);
+    background: var(--glass-solid);
     border-color: var(--line);
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.6);
   }
 
   &.hidden { translate: -50% -120px; }
@@ -129,6 +128,60 @@
 
 .hire { min-height: 42px; padding: 0 18px; font-size: 14px; }
 
+/* --- Selector de idioma --- */
+.lang {
+  position: relative;
+}
+
+.lang-btn {
+  gap: 4px;
+  grid-auto-flow: column;
+  font-size: 12px;
+  font-weight: 700;
+
+  span { font-size: 13px; }
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 60;
+  display: grid;
+  gap: 2px;
+  min-width: 190px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border-radius: 16px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  animation: menu-in 0.25s var(--ease-out) both;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    font-size: 14px;
+    text-align: left;
+
+    span { font-size: 11px; color: var(--muted); width: 22px; }
+    &:hover { background: var(--surface-2); }
+    &.active { background: var(--lime); color: var(--on-lime); span { color: var(--on-lime); } }
+  }
+}
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(-6px); }
+}
+
 /* --- Interruptor Simple / Técnico --- */
 .mode-toggle {
   position: relative;
@@ -190,7 +243,9 @@
   }
   .hire { display: none; }
   .cmd { display: none; }
-  .mode-toggle button { min-height: 32px; padding: 0 11px; font-size: 12px; }
+  .mode-toggle button { min-height: 32px; padding: 0 10px; font-size: 12px; }
+  .actions { gap: 6px; }
+  .lang-btn { min-width: 0; padding: 0 9px; }
   .logo-text { display: none; }
 
   .dock {
@@ -203,10 +258,8 @@
     padding: 6px;
     translate: -50% 0;
     border-radius: 22px;
-    background: var(--glass);
+    background: var(--glass-solid);
     border: 1px solid var(--line-strong);
-    backdrop-filter: blur(18px) saturate(1.4);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
     box-shadow: var(--shadow);
 
     a {

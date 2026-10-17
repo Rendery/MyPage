@@ -18,7 +18,22 @@ https://TU-DOMINIO/?modo=simple
 https://TU-DOMINIO/?modo=tecnico
 ```
 
-La elección se recuerda en el navegador del visitante. Los textos simples están junto a los técnicos en `src/app/data/profile.data.ts` (campos `simple…`).
+La elección se recuerda en el navegador del visitante. Los textos simples están junto a los técnicos en `src/app/i18n/` (campos `simple…`).
+
+## Idiomas: español, inglés y portugués (Brasil)
+
+Botón 🌐 en la barra superior. El idioma cambia al instante, sin recargar, y se recuerda en el navegador.
+Si el visitante no eligió ninguno, se usa el idioma de su navegador (por defecto, español).
+
+Enlaces directos (se combinan con `modo` y con los del fotocheck):
+
+```
+https://TU-DOMINIO/?lang=en
+https://TU-DOMINIO/?lang=pt&modo=tecnico
+```
+
+Todos los textos están en `src/app/i18n/` (`es.ts`, `en.ts`, `pt.ts`), con la misma estructura en los tres.
+`es.ts` es la base: si agregas un texto ahí y falta en `en.ts` o `pt.ts`, el proyecto no compila y TypeScript indica qué falta.
 
 ## Desarrollo
 
@@ -32,8 +47,8 @@ npm run build      # salida en dist/my-page/browser
 
 | Qué | Archivo |
 |---|---|
-| Todos los datos del CV (experiencia, proyectos, stack, certificaciones, contacto) | `src/app/data/profile.data.ts` |
-| Sesiones de ejemplo de la terminal de IA | `src/app/components/ai-lab/ai-scripts.ts` |
+| Textos de la web en cada idioma (versión simple y técnica) | `src/app/i18n/es.ts`, `en.ts`, `pt.ts` |
+| Datos que no cambian con el idioma (enlaces, tecnologías, certificados, ids) | `src/app/data/profile.data.ts` |
 | Colores, tipografías y tema claro/oscuro | `src/styles.scss` |
 | CV en PDF que se descarga | `public/cv/Edery_Abanto_CV.pdf` |
 

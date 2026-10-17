@@ -1,40 +1,65 @@
+@let t = i18n.c().ui.nav;
+@let sections = i18n.c().sections;
 <div class="progress" aria-hidden="true"><span #progress></span></div>
 
-<header class="topbar" [class.hidden]="hidden() && !ui.paletteOpen()" [class.scrolled]="scrolled()">
-  <a class="logo" href="#inicio" (click)="go('inicio', $event)" aria-label="Edery Abanto, ir al inicio">
+<header class="topbar" [class.hidden]="hidden() && !ui.paletteOpen() && !langOpen()" [class.scrolled]="scrolled()">
+  <a class="logo" href="#inicio" (click)="go('inicio', $event)" [attr.aria-label]="t.homeAria">
     <span class="mark">EA</span>
     <span class="logo-text">Edery<b>.</b></span>
   </a>
 
-  <nav class="links" aria-label="Secciones">
+  <nav class="links" [attr.aria-label]="t.sectionsAria">
     @for (l of links; track l.id) {
       <a [href]="'#' + l.id" [class.active]="ui.activeSection() === l.id" [attr.aria-current]="ui.activeSection() === l.id ? 'true' : null" (click)="go(l.id, $event)">
-        {{ l.label }}
+        {{ sections[l.id] }}
       </a>
     }
   </nav>
 
   <div class="actions">
-    <div class="mode-toggle" role="group" aria-label="Versión de la página" [class.tech]="!mode.simple()" [class.hint]="hint()">
-      <span class="mt-pill" aria-hidden="true"></span>
-      <button type="button" [attr.aria-pressed]="mode.simple()" (click)="setMode('simple')" data-cursor="sin tecnicismos">Simple</button>
-      <button type="button" [attr.aria-pressed]="!mode.simple()" (click)="setMode('tecnico')" data-cursor="detalle técnico">Técnico</button>
+    <div class="lang">
+      <button
+        type="button"
+        class="icon-btn lang-btn mono"
+        (click)="langOpen.set(!langOpen())"
+        [attr.aria-expanded]="langOpen()"
+        aria-haspopup="menu"
+        [attr.aria-label]="t.langAria + ': ' + i18n.meta().name"
+      >
+        <span aria-hidden="true">🌐</span> {{ i18n.meta().short }}
+      </button>
+      @if (langOpen()) {
+        <ul class="lang-menu" role="menu">
+          @for (l of i18n.langs; track l.id) {
+            <li role="none">
+              <button type="button" role="menuitemradio" [attr.aria-checked]="i18n.lang() === l.id" [class.active]="i18n.lang() === l.id" (click)="setLang(l.id)">
+                <span class="mono">{{ l.short }}</span> {{ l.name }}
+              </button>
+            </li>
+          }
+        </ul>
+      }
     </div>
-    <button type="button" class="icon-btn cmd" (click)="ui.openPalette()" aria-label="Abrir paleta de comandos" data-cursor="comandos">
+    <div class="mode-toggle" role="group" [attr.aria-label]="t.versionAria" [class.tech]="!mode.simple()" [class.hint]="hint()">
+      <span class="mt-pill" aria-hidden="true"></span>
+      <button type="button" [attr.aria-pressed]="mode.simple()" (click)="setMode('simple')" [attr.data-cursor]="t.cursorSimple">{{ t.simple }}</button>
+      <button type="button" [attr.aria-pressed]="!mode.simple()" (click)="setMode('tecnico')" [attr.data-cursor]="t.cursorTech">{{ t.technical }}</button>
+    </div>
+    <button type="button" class="icon-btn cmd" (click)="ui.openPalette()" [attr.aria-label]="t.paletteAria" data-cursor="Ctrl K">
       <span class="mono">{{ isMac ? '⌘' : 'Ctrl' }} K</span>
     </button>
-    <button type="button" class="icon-btn" (click)="toggleTheme($event)" [attr.aria-label]="theme.theme() === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'">
+    <button type="button" class="icon-btn" (click)="toggleTheme($event)" [attr.aria-label]="theme.theme() === 'dark' ? t.themeToLight : t.themeToDark">
       <span class="theme-ico" [class.light]="theme.theme() === 'light'" aria-hidden="true"></span>
     </button>
-    <a class="btn primary hire" href="#contacto" (click)="go('contacto', $event)" appMagnetic>Contrátame</a>
+    <a class="btn primary hire" href="#contacto" (click)="go('contacto', $event)" appMagnetic>{{ t.hire }}</a>
   </div>
 </header>
 
-<nav class="dock" aria-label="Navegación rápida">
+<nav class="dock" [attr.aria-label]="t.dockAria">
   @for (d of dock; track d.id) {
     <a [href]="'#' + d.id" [class.active]="ui.activeSection() === d.id" [attr.aria-current]="ui.activeSection() === d.id ? 'true' : null" (click)="go(d.id, $event)">
       <span class="d-ico" aria-hidden="true">{{ d.icon }}</span>
-      <span class="d-label">{{ d.label }}</span>
+      <span class="d-label">{{ sections[d.id] }}</span>
     </a>
   }
 </nav>

@@ -6,7 +6,7 @@
     [class.ready]="state() === 'ok'"
     [src]="src()"
     [alt]="alt()"
-    (load)="state.set('ok')"
+    (load)="onLoad($event)"
     (error)="onError()"
     draggable="false"
     decoding="async"

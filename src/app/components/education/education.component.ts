@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { CountUpDirective, RevealDirective, SplitDirective, TiltDirective } from '../../directives/motion.directives';
 import { FeedbackService } from '../../services/feedback.service';
 import { ModeService } from '../../services/mode.service';
-import { CERTS, EDUCATION, PROFILE } from '../../data/profile.data';
+import { CERTS } from '../../data/profile.data';
+import { I18nService } from '../../i18n/i18n.service';
 
 const PAGE = 8;
 
@@ -16,9 +17,8 @@ const PAGE = 8;
 export class EducationComponent {
   private feedback = inject(FeedbackService);
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
 
-  readonly education = EDUCATION;
-  readonly languages = PROFILE.languages;
   readonly total = CERTS.length;
   readonly orgs = (() => {
     const map = new Map<string, number>();
@@ -42,6 +42,6 @@ export class EducationComponent {
   }
 
   copyId(id: string): void {
-    this.feedback.copy(id, 'ID de credencial');
+    this.feedback.copy(id, this.i18n.c().ui.edu.idLabel);
   }
 }

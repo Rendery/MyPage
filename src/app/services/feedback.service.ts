@@ -1,4 +1,5 @@
 import { Injectable, NgZone, inject, signal } from '@angular/core';
+import { I18nService } from '../i18n/i18n.service';
 
 export interface Toast {
   id: number;
@@ -13,6 +14,7 @@ const CONFETTI_COLORS = ['#c8f031', '#4de1f0', '#ff6b2c', '#9b8cff', '#ff5c9a', 
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
   private zone = inject(NgZone);
+  private i18n = inject(I18nService);
   private nextId = 0;
   readonly toasts = signal<Toast[]>([]);
 
@@ -33,7 +35,7 @@ export class FeedbackService {
   async copy(text: string, label: string): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
-      this.toast(`${label} copiado`, '⧉');
+      this.toast(this.i18n.c().ui.copied(label), '⧉');
     } catch {
       this.toast(text, 'ℹ');
     }

@@ -1,37 +1,22 @@
+@let c = i18n.c();
+@let t = c.ui.projects;
 <section id="proyectos" class="section">
   <div class="wrap">
-    <p class="eyebrow" appReveal="fade">05 · <b>Proyectos</b></p>
-    <h2 class="section-title" appSplit>Software que <em>se usa de verdad</em></h2>
-    <p class="section-lead" appReveal>
-      @if (mode.simple()) {
-        Mi proyecto más importante: herramientas que construí solo para una clínica y que hoy están en uso. Pruébalas aquí mismo:
-      } @else {
-        Mi proyecto más fuerte: un ecosistema de apps internas que construí solo, sin área de sistemas, y que hoy está en producción. Pruébalo:
-      }
-    </p>
+    <p class="eyebrow" appReveal="fade">05 · <b>{{ t.eyebrow }}</b></p>
+    <h2 class="section-title" [appSplit]="t.titleA + ' <em>' + t.titleB + '</em>'"></h2>
+    <p class="section-lead" appReveal>{{ mode.simple() ? t.leadSimple : t.leadTech }}</p>
 
     <article class="featured card" appReveal>
       <header class="feat-head">
         <div>
-          <span class="feat-tag mono">★ Destacado · Bienestar · 2026</span>
-          @if (mode.simple()) {
-            <h3>Los sistemas de una clínica real</h3>
-            <p>
-              Una clínica de ~15 personas sin área de sistemas. Entendí cómo trabajaban y convertí su agenda, su caja y su facturación en
-              herramientas fáciles de usar, pensadas para personas que no son técnicas.
-            </p>
-          } @else {
-            <h3>Ecosistema de apps internas</h3>
-            <p>
-              Levanté los procesos de una empresa de ~15 personas (agenda, caja, facturación e información) y los automaticé con aplicaciones
-              propias: modulares, trazables y fáciles de usar para personas no técnicas.
-            </p>
-          }
+          <span class="feat-tag mono">{{ t.featuredTag }}</span>
+          <h3>{{ mode.simple() ? t.featuredSimpleTitle : t.featuredTechTitle }}</h3>
+          <p>{{ mode.simple() ? t.featuredSimpleDesc : t.featuredTechDesc }}</p>
         </div>
         @if (!mode.simple()) {
           <ul class="stack">
-            @for (t of ['Python', 'HTML / JS', 'PostgreSQL', 'Railway', 'Cloudflare R2', 'Playwright', 'GitHub']; track t) {
-              <li class="chip">{{ t }}</li>
+            @for (tag of ['Python', 'HTML / JS', 'PostgreSQL', 'Railway', 'Cloudflare R2', 'Playwright', 'GitHub']; track tag) {
+              <li class="chip">{{ tag }}</li>
             }
           </ul>
         }
@@ -41,31 +26,32 @@
     </article>
 
     <div class="rail-head">
-      <h3 class="rail-title">Más proyectos</h3>
+      <h3 class="rail-title">{{ t.more }}</h3>
       <div class="rail-nav">
-        <button type="button" class="arrow" (click)="scroll(-1)" [disabled]="atStart()" aria-label="Proyecto anterior">←</button>
-        <button type="button" class="arrow" (click)="scroll(1)" [disabled]="atEnd()" aria-label="Proyecto siguiente">→</button>
+        <button type="button" class="arrow" (click)="scroll(-1)" [disabled]="atStart()" [attr.aria-label]="t.prev">←</button>
+        <button type="button" class="arrow" (click)="scroll(1)" [disabled]="atEnd()" [attr.aria-label]="t.next">→</button>
       </div>
     </div>
 
-    <div class="rail" #rail data-cursor="arrastra" appReveal="stagger">
-      @for (p of projects; track p.title) {
+    <div class="rail" #rail [attr.data-cursor]="t.cursor" appReveal="stagger">
+      @for (p of projects; track p.id) {
+        @let txt = c.projects[p.id];
         <article class="proj card spotlight" appTilt="5" [style.--accent]="p.accent">
           <div class="proj-top">
             <span class="emoji" aria-hidden="true">{{ p.emoji }}</span>
-            <span class="meta mono">{{ p.org }} · {{ p.year }}</span>
+            <span class="meta mono">{{ txt.org }} · {{ p.year }}</span>
           </div>
-          <h4>{{ mode.simple() ? p.simpleTitle : p.title }}</h4>
-          <p>{{ mode.simple() ? p.simpleDesc : p.desc }}</p>
+          <h4>{{ mode.simple() ? txt.simpleTitle : txt.title }}</h4>
+          <p>{{ mode.simple() ? txt.simpleDesc : txt.desc }}</p>
           <ul class="bul">
-            @for (b of mode.simple() ? p.simpleBullets : p.bullets; track $index) {
+            @for (b of mode.simple() ? txt.simpleBullets : txt.bullets; track $index) {
               <li>{{ b }}</li>
             }
           </ul>
           @if (!mode.simple()) {
             <ul class="tags">
-              @for (t of p.tags; track t) {
-                <li class="chip">{{ t }}</li>
+              @for (tag of p.tags; track tag) {
+                <li class="chip">{{ i18n.term(tag) }}</li>
               }
             </ul>
           }

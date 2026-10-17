@@ -4,10 +4,11 @@ import { RevealDirective, SplitDirective } from '../../directives/motion.directi
 import { FeedbackService } from '../../services/feedback.service';
 import { ModeService } from '../../services/mode.service';
 import { MotionService } from '../../services/motion.service';
-import { AI_TOOLKIT, AI_TOOLKIT_SIMPLE, Agent, LineKind, PRINCIPLES, SCENARIOS, SCRIPTS, SIMPLE_REQUESTS, SIMPLE_STEPS, Scenario } from './ai-scripts';
+import { I18nService } from '../../i18n/i18n.service';
+import { Agent, LineKind, SCENARIO_IDS, Scenario } from './ai-scripts';
 
 interface ShownLine {
-  k: LineKind;
+  k: LineKind | string;
   t: string;
   typing?: boolean;
 }
@@ -23,10 +24,10 @@ export class AiLabComponent {
   private motion = inject(MotionService);
   private feedback = inject(FeedbackService);
   readonly mode = inject(ModeService);
+  readonly i18n = inject(I18nService);
 
-  readonly scenarios = SCENARIOS;
-  readonly principles = PRINCIPLES;
-  readonly toolkit = computed(() => (this.mode.simple() ? AI_TOOLKIT_SIMPLE : AI_TOOLKIT));
+  readonly scenarioIds = SCENARIO_IDS;
+  readonly toolkit = computed(() => (this.mode.simple() ? this.i18n.c().ai.toolkitSimple : this.i18n.c().ai.toolkit));
 
   // --- Versión técnica: terminal con Claude Code / Codex ---
   readonly agent = signal<Agent>('claude');
@@ -35,8 +36,6 @@ export class AiLabComponent {
   readonly running = signal(false);
 
   // --- Versión simple: los 4 pasos de cómo trabajo con IA ---
-  readonly requests = SIMPLE_REQUESTS;
-  readonly steps = SIMPLE_STEPS;
   readonly request = signal(0);
   /** -1 = recién llega el pedido; 0..3 = paso en curso; 4 = entregado. */
   readonly step = signal(-1);
@@ -65,6 +64,7 @@ export class AiLabComponent {
     // Al cambiar de versión arranca la animación que corresponde.
     effect(() => {
       this.mode.mode();
+      this.i18n.lang();
       queueMicrotask(() => {
         this.clear();
         if (this.visible) this.start();
@@ -102,7 +102,7 @@ export class AiLabComponent {
 
   play(): void {
     this.clear();
-    const script = SCRIPTS[this.agent()][this.scenario()];
+    const script = this.i18n.c().ai.scripts[this.agent()][this.scenario()];
 
     if (this.motion.reduced) {
       this.lines.set(script.map((l) => ({ ...l })));
@@ -131,17 +131,19 @@ export class AiLabComponent {
   /** Pedido → 4 pasos que se van marcando → resultado entregado; luego pasa al siguiente pedido. */
   playSimple(): void {
     this.clear();
+    const steps = this.i18n.c().ai.simpleSteps.length;
+    const requests = this.i18n.c().ai.simpleRequests.length;
     if (this.motion.reduced) {
-      this.step.set(SIMPLE_STEPS.length);
+      this.step.set(steps);
       return;
     }
     this.running.set(true);
     this.step.set(-1);
-    SIMPLE_STEPS.forEach((_, i) => this.at(900 + i * 1100, () => this.step.set(i)));
-    const done = 900 + SIMPLE_STEPS.length * 1100;
-    this.at(done, () => this.step.set(SIMPLE_STEPS.length));
+    for (let i = 0; i < steps; i++) this.at(900 + i * 1100, () => this.step.set(i));
+    const done = 900 + steps * 1100;
+    this.at(done, () => this.step.set(steps));
     this.at(done + 3600, () => {
-      this.request.update((r) => (r + 1) % SIMPLE_REQUESTS.length);
+      this.request.update((r) => (r + 1) % requests);
       this.playSimple();
     });
   }

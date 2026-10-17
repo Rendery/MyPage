@@ -33,6 +33,15 @@ export class AvatarComponent {
     return `url(#${this.pid}-${key})`;
   }
 
+  /** Decodifica la foto antes de mostrarla, así no se decodifica a mitad del scroll. */
+  onLoad(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img
+      .decode()
+      .catch(() => undefined)
+      .then(() => this.state.set('ok'));
+  }
+
   onError(): void {
     if (this.format() === 'webp') this.format.set('png');
     else this.state.set('missing');

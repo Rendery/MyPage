@@ -1,4 +1,4 @@
-import { DestroyRef, Directive, ElementRef, NgZone, afterNextRender, inject, input } from '@angular/core';
+import { DestroyRef, Directive, ElementRef, NgZone, afterNextRender, effect, inject, input, untracked } from '@angular/core';
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { MotionService } from '../services/motion.service';
@@ -50,36 +50,64 @@ export class RevealDirective {
   }
 }
 
-/** Títulos que entran letra por letra con máscara. */
+/**
+ * Títulos que entran letra por letra con máscara.
+ * `[appSplit]="html"` recibe el texto (puede llevar <em>): al cambiar de idioma se vuelve a dividir,
+ * porque SplitText reemplaza los nodos de texto y Angular ya no podría actualizarlos.
+ */
 @Directive({ selector: '[appSplit]' })
 export class SplitDirective {
+  readonly html = input('', { alias: 'appSplit' });
+
   constructor() {
     const el = inject(ElementRef<HTMLElement>).nativeElement as HTMLElement;
     const motion = inject(MotionService);
     const zone = inject(NgZone);
     let split: SplitText | undefined;
+    let ready = false;
+    let revealed = false;
 
-    afterNextRender(() => {
+    const build = () => {
+      split?.revert();
+      split = undefined;
+      if (this.html()) el.innerHTML = this.html();
       if (motion.reduced) return;
       zone.runOutsideAngular(() => {
-        document.fonts.ready.then(() => {
-          split = SplitText.create(el, {
-            type: 'words,chars',
-            mask: 'words',
-            wordsClass: 'split-word',
-            autoSplit: true,
-            onSplit: (self) =>
-              gsap.from(self.chars, {
-                yPercent: 115,
-                rotate: 6,
-                duration: 1,
-                ease: 'expo.out',
-                stagger: 0.018,
-                scrollTrigger: { trigger: el, start: 'top 90%', once: true },
-              }),
-          });
+        split = SplitText.create(el, {
+          type: 'words,chars',
+          mask: 'words',
+          wordsClass: 'split-word',
+          autoSplit: true,
+          // Solo la primera vez entra animado; si después cambia el idioma, el texto nuevo aparece directo.
+          onSplit: (self) =>
+            revealed
+              ? undefined
+              : gsap.from(self.chars, {
+                  yPercent: 115,
+                  rotate: 6,
+                  duration: 1,
+                  ease: 'expo.out',
+                  stagger: 0.018,
+                  scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+                  onStart: () => {
+                    revealed = true;
+                  },
+                }),
         });
       });
+    };
+
+    afterNextRender(() => {
+      if (this.html()) el.innerHTML = this.html();
+      document.fonts.ready.then(() => {
+        ready = true;
+        build();
+      });
+    });
+
+    effect(() => {
+      this.html();
+      if (ready) untracked(build);
     });
 
     inject(DestroyRef).onDestroy(() => split?.revert());
